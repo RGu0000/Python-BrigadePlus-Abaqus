@@ -1,0 +1,77 @@
+
+##### Högdalsdepån  #####
+### Västra anslitning - Norra enkelspår tunnel ###
+#
+## Inport the toolbars and general thinks in brigade. 
+## Always need to be loaded the inpute is comeing from script ##
+
+from abaqus import *
+from abaqusConstants import *
+import bpCustomData
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=451.333312988281, 
+    height=315.134979248047)
+session.viewports['Viewport: 1'].makeCurrent()
+
+session.viewports['Viewport: 1'].maximize()
+import createStepsModule
+import printStepInfoModule
+from caeModules import *
+from brigadeConstants import *
+import dataManagement.registerKernelCommands
+dataManagement.registerKernelCommands.RegisterCallbacks()
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+#: Executing "onCaeStartup()" in the site directory ...
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+bpCustomData.createBpCustomData()
+mdb.customData.fileEvent = 0
+import LL_axlePos.liveLoadPosUtils
+from LL_axlePos.liveLoadPosSymConsts import *
+import fbcAxesDisplayUtils
+
+
+
+#name = 'Tunnel_newgeom_test_11.27_v02'
+	
+# ## Save as ##	
+# import bpCustomData
+# bpCustomData.createBpCustomData()
+# mdb.saveAs(pathName='C:/BRIGADE Plus Work Directory/'+name)
+
+#: The model database has been saved to "C:\BRIGADE Plus Work Directory\test_new.cae".
+
+############################# EXCEL SHEET2 INPUT STARTS ###############################
+x01=0.000
+x02=3.900
+x03=46.795
+x04=52.240
+x05=56.400
+x06=56.400
+x07=0.000
+y01=12.123
+y02=11.970
+y03=11.970
+y04=12.175
+y05=12.470
+y06=0.000
+y07=0.000
+
+x1=0.000
+x2=3.900
+x3=46.795
+x4=52.240
+x5=56.400
+x6=56.400
+x7=0.000
+y1=11.523
+y2=11.370
+y3=11.370
+y4=11.575
+y5=11.870
+y6=0.600
+y7=0.600
+
+
+hhh=5.820
+
