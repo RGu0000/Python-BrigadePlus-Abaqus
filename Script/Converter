@@ -1,0 +1,102 @@
+import re
+import numpy as np
+from matplotlib.mlab import griddata
+import openpyxl as xl
+
+xl_workbook = r'Reinforcement.xlsm'
+xl_sheet = r'Brigade_data'
+
+brigade_input_files = [
+
+
+    dict(file=r'ULS_SM1_SM1Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SM2Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SM3Max.txt', regex=r'Top_(\d+)'),   
+    dict(file=r'ULS_SM1_SF1Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF2Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF3Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF4Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF5Max.txt', regex=r'Top_(\d+)'),
+
+
+    dict(file=r'SLS_SM1_SM1Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SM2Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SM3Max.txt', regex=r'Top_(\d+)'),   
+    dict(file=r'SLS_SM1_SF1Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF2Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF3Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF4Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF5Max.txt', regex=r'Top_(\d+)'),
+    
+    dict(file=r'ULS_SM1_SM1Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SM2Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SM3Min.txt', regex=r'Top_(\d+)'),  
+    dict(file=r'ULS_SM1_SF1Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF2Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF3Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF4Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SM1_SF5Min.txt', regex=r'Top_(\d+)'),
+
+
+    dict(file=r'SLS_SM1_SM1Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SM2Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SM3Min.txt', regex=r'Top_(\d+)'),   
+    dict(file=r'SLS_SM1_SF1Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF2Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF3Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF4Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'SLS_SM1_SF5Min.txt', regex=r'Top_(\d+)'),
+
+    dict(file=r'ULS_SF4_SF1Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF2Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF3Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF4Min.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF5Min.txt', regex=r'Top_(\d+)'),
+    
+    dict(file=r'ULS_SF4_SF1Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF2Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF3Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF4Max.txt', regex=r'Top_(\d+)'),
+    dict(file=r'ULS_SF4_SF5Max.txt', regex=r'Top_(\d+)')
+]
+
+wb = xl.load_workbook(xl_workbook, keep_vba=True, keep_links=True)
+if xl_sheet in wb.sheetnames: wb.remove_sheet(wb.get_sheet_by_name(xl_sheet))
+ws = wb.create_sheet(xl_sheet, len(wb.worksheets))
+
+
+# Process Brigade inputs
+data = []; # 2d array [n][m], n is the file, m is the section
+for item in brigade_input_files:
+    with open(item['file'], 'r') as input_file:
+        data.append(input_file.read().strip('\r\n').split('\n\n\n'))
+
+
+
+for chunk_id in range(len(data[0])): # loop through chunks (sections)
+    x_brig_data, y_brig_data, z_brig_data = [], [], []
+    regex = re.compile(brigade_input_files[0]['regex'])
+    section_id = int(regex.search(data[0][chunk_id]).group(1)) # take section id from the first file
+    for file_id in range(len(data)): # loop through files
+        chunk = data[file_id][chunk_id]
+        section_id_test = int(regex.search(chunk).group(1))
+        if section_id_test != section_id:
+            raise(ValueError, 'Section ID mismatch, expected %d, got %d'.format(section_id, section_id_test))
+        for line in chunk.split('\n'):
+            if 'TOTAL' not in line and 'X' not in line and 'Top' not in line and len(line) > 0:
+                x, z = [float(number) for number in str.split(line)]
+                x_brig_data.append(x)
+                y_brig_data.append(file_id)
+                z_brig_data.append(z / 1000)
+    x_brig_axis = np.unique(x_brig_data)
+    y_brig_axis = np.unique(y_brig_data)
+    x_brig_plot, y_brig_plot = np.meshgrid(x_brig_axis, y_brig_axis)
+    z_brig_plot = griddata(x_brig_data, y_brig_data, z_brig_data, x_brig_axis, y_brig_axis, interp='linear')
+    wb.save(xl_workbook)
+    print('Finished section:', section_id)
+    ws.append(['section: ' + str(section_id)])
+    ws.append(x_brig_axis.tolist())
+    for row in z_brig_plot.tolist():
+        ws.append(row)
+wb.save(xl_workbook)
+print("Saved workbook.")
