@@ -1,0 +1,56 @@
+
+###### RESULT ######
+
+# To get the SM results associated with SM2 max and min
+
+Stepnum = 193			# This is which load combination should be used ex. ULS_B_STR_GEO_b_envelope_Sk3_DA3
+Frame = [20,21]		# this is the SM1 max and min
+Varlabel = 'SF'
+Component = ['SF1','SF2','SF3','SF4','SF5'] # we want to get SF1-SF5  from the associated SM2
+CASE = 'SLS_SM1_' 
+# To get the result in every n meter set the step = n 
+L = 56 			# length of the element you want to create the result path
+stepl = 1 		# The distance between the path is the step in meter
+stepvecotr = range(0,L+1,stepl)
+# The name of the path and plot is going to be Top_0 ,Top_step... 
+Section_name = ['Top_'+str(i) for i in range(0,L+1,stepl)] 		# L is the length of the element (ex: top plate) approximately
+# Create the path with coordinates (x,y,z),(x,y,z) x is the stepvektor 0+step... ; y is -5 and -5 which is 
+# wider than the tunnel to have all the points in the path; z is the higt of the tunnel in this case 5.82
+for iii in range(len(Section_name)):	
+	session.Path(name=(Section_name[iii]+CASE), type=POINT_LIST, expression=(
+	(stepvecotr[iii], -2, hhh), (stepvecotr[iii],13, hhh)	
+	))
+
+
+	
+#
+MINMAX= ['Max','Min']
+
+for i in range(len(Frame)):
+	session.viewports['Viewport: 1'].odbDisplay.setFrame(step=Stepnum, frame=Frame[i])
+	for c in range(len(Component)):
+		session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+			variableLabel=Varlabel, outputPosition=INTEGRATION_POINT, refinement=(
+			COMPONENT, Component[c]))
+		# This is to create the XYData from the path from the actual result ## press some enter after it it is not working...
+		# it will take some miutes until it is done
+		#SET = SEETT[c]
+		for j in range(len(Section_name)):	
+			pth = session.paths[Section_name[j]+CASE]
+			session.XYDataFromPath(name=Section_name[j]+CASE+Component[c]+MINMAX[i], path=pth, includeIntersections=True, 
+				projectOntoMesh=False, pathStyle=PATH_POINTS, numIntervals=10, 
+				projectionTolerance=0, shape=DEFORMED, labelType=TRUE_DISTANCE)
+		##
+		x = range(56)  # empty list with __ elements
+		for k in range(len(x)):
+			x[k] = session.xyDataObjects['Top_' + str(k) + CASE+Component[c]+MINMAX[i]]
+		#
+		session.xyReportOptions.setValues(totals=OFF, minMax=OFF, 
+		layout=SEPARATE_TABLES)
+		session.writeXYReport(fileName=CASE+Component[c]+MINMAX[i]+'.txt', xyData=(x))
+		
+		## Delete the certaion results
+		for n in range(len(Section_name)):	
+			del session.xyDataObjects[Section_name[n]+CASE+Component[c]+MINMAX[i]]
+#
+
