@@ -1,0 +1,3168 @@
+
+from abaqus import *
+from abaqusConstants import *
+import bpCustomData
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=451.333312988281, 
+    height=315.134979248047)
+session.viewports['Viewport: 1'].makeCurrent()
+
+session.viewports['Viewport: 1'].maximize()
+import createStepsModule
+import printStepInfoModule
+from caeModules import *
+from brigadeConstants import *
+import dataManagement.registerKernelCommands
+dataManagement.registerKernelCommands.RegisterCallbacks()
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+#: Executing "onCaeStartup()" in the site directory ...
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+bpCustomData.createBpCustomData()
+mdb.customData.fileEvent = 0
+import LL_axlePos.liveLoadPosUtils
+from LL_axlePos.liveLoadPosSymConsts import *
+import fbcAxesDisplayUtils
+
+from step import *
+from part import *
+from material import *
+from section import *
+from assembly import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
+from connectorBehavior import *
+
+
+# dataManagement.modules.designCodes.registerFormHandling.ImportDesignCode(
+    # designCodeName='TRV publ 2011:085 med TRVFS 2011:12', designCodeId='514', 
+    # modelName='Model-1', basicLoadCases=True, vehicles=True, 
+    # loadCombinations=True, lengthScale=1, forceScale=1)
+	
+
+
+#: SAVE
+import bpCustomData
+bpCustomData.createBpCustomData()
+
+#.saveAs(pathName='C:/BRIGADE Plus Work Directory/TestRGu')
+
+#: CREATE A BOTTOMPLATE 1
+
+############################# EXCEL SHEET2 INPUT STARTS ###############################
+x01=0.000
+x02=3.900
+x03=46.795
+x04=52.240
+x05=56.400
+x06=56.400
+x07=0.000
+y01=12.123
+y02=11.970
+y03=11.970
+y04=12.175
+y05=12.470
+y06=0.000
+y07=0.000
+
+x1=0.000
+x2=3.900
+x3=46.795
+x4=52.240
+x5=56.400
+x6=56.400
+x7=0.000
+y1=11.523
+y2=11.370
+y3=11.370
+y4=11.575
+y5=11.870
+y6=0.600
+y7=0.600
+
+
+hhh=5.820
+
+L12=sqrt(pow(x2-x1,2)+pow(y2-y1,2))
+L23=sqrt(pow(x3-x2,2)+pow(y3-y2,2))
+L34=sqrt(pow(x4-x3,2)+pow(y4-y3,2))
+L45=sqrt(pow(x5-x4,2)+pow(y5-y4,2))
+
+L67=sqrt(pow(x7-x6,2)+pow(y7-y6,2))
+
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=200.0)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+
+s.Line(point1=(x1,y1),point2=(x2,y2))
+s.Line(point1=(x2,y2),point2=(x3,y3))
+s.Line(point1=(x3,y3),point2=(x4,y4))
+s.Line(point1=(x4,y4),point2=(x5,y5))
+s.Line(point1=(x5,y5),point2=(x6,y6))
+s.Line(point1=(x6,y6),point2=(x7,y7))
+s.Line(point1=(x7,y7),point2=(x1,y1))
+
+########################################## EXCEL SHEET2 INPUT ENDS #############################
+
+p = mdb.models['Model-1'].Part(name='BP1', dimensionality=THREE_D, 
+    type=DEFORMABLE_BODY)
+	
+p = mdb.models['Model-1'].parts['BP1']
+p.BaseShell(sketch=s)
+
+s.unsetPrimaryObject()
+p = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+###########################################################################################
+#: set the datum for wall-1
+p = mdb.models['Model-1'].parts['BP1']
+f, e = p.faces, p.edges
+p.DatumPlaneByRotation(plane=f.findAt(coordinates=(x1, y1, 0.0)), 
+    axis=e.findAt(coordinates=(x1, y1, 0.0)), angle=90.0)
+mdb.models['Model-1'].parts['BP1'].features.changeKey(fromName='Datum plane-1', 
+    toName='DP1')
+	
+#: set the datum for wall-2
+p = mdb.models['Model-1'].parts['BP1']
+f, e = p.faces, p.edges
+p.DatumPlaneByRotation(plane=f.findAt(coordinates=(x2, y2, 0.0)), 
+    axis=e.findAt(coordinates=(x3, y3, 0.0)), angle=90.0)
+mdb.models['Model-1'].parts['BP1'].features.changeKey(fromName='Datum plane-1', 
+    toName='DP2')
+
+#: set the datum for wall-3	
+p = mdb.models['Model-1'].parts['BP1']
+f, e = p.faces, p.edges
+p.DatumPlaneByRotation(plane=f.findAt(coordinates=(x3, y3, 0.0)), 
+    axis=e.findAt(coordinates=(x4, y4, 0.0)), angle=90.0)
+mdb.models['Model-1'].parts['BP1'].features.changeKey(fromName='Datum plane-1', 
+    toName='DP3')	
+	
+#: set the datum for wall-4	
+p = mdb.models['Model-1'].parts['BP1']
+f, e = p.faces, p.edges
+p.DatumPlaneByRotation(plane=f.findAt(coordinates=(x4, y4, 0.0)), 
+    axis=e.findAt(coordinates=(x5, y5, 0.0)), angle=90.0)
+mdb.models['Model-1'].parts['BP1'].features.changeKey(fromName='Datum plane-1', 
+    toName='DP4')	
+
+#: set the datum for wall-6	
+p = mdb.models['Model-1'].parts['BP1']
+f, e = p.faces, p.edges
+p.DatumPlaneByRotation(plane=f.findAt(coordinates=(x6, y6, 0.0)), 
+    axis=e.findAt(coordinates=(x7, y7, 0.0)), angle=90.0)
+mdb.models['Model-1'].parts['BP1'].features.changeKey(fromName='Datum plane-1', 
+    toName='DP5')	
+		
+	
+###########################################################################################
+#: Create wall-1 sketch
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=200.0)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=STANDALONE)
+
+s1.Line(point1=(0, 0), point2=(0, hhh))
+s1.Line(point1=(L12, hhh), point2=(0, hhh))
+s1.Line(point1=(L12, hhh), point2=(L12, 0))
+s1.Line(point1=(0, 0), point2=(L12, 0))
+
+mdb.models['Model-1'].sketches.changeKey(fromName='__profile__', 
+    toName='wall-1')
+s1.unsetPrimaryObject()	
+
+#: Create wall-2 sketch
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=200.0)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=STANDALONE)
+
+s1.Line(point1=(0, 0), point2=(0, hhh))
+s1.Line(point1=(L23, hhh), point2=(0, hhh))
+s1.Line(point1=(L23, hhh), point2=(L23, 0))
+s1.Line(point1=(0, 0), point2=(L23, 0))
+
+mdb.models['Model-1'].sketches.changeKey(fromName='__profile__', 
+    toName='wall-2')
+s1.unsetPrimaryObject()	
+	
+#: Create wall-3 sketch
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=200.0)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=STANDALONE)
+
+s1.Line(point1=(0, 0), point2=(0, hhh))
+s1.Line(point1=(L34, hhh), point2=(0, hhh))
+s1.Line(point1=(L34, hhh), point2=(L34, 0))
+s1.Line(point1=(0, 0), point2=(L34, 0))
+
+mdb.models['Model-1'].sketches.changeKey(fromName='__profile__', 
+    toName='wall-3')
+s1.unsetPrimaryObject()	
+	
+#: Create wall-4 sketch
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=200.0)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=STANDALONE)
+
+s1.Line(point1=(0, 0), point2=(0, hhh))
+s1.Line(point1=(L45, hhh), point2=(0, hhh))
+s1.Line(point1=(L45, hhh), point2=(L45, 0))
+s1.Line(point1=(0, 0), point2=(L45, 0))
+
+mdb.models['Model-1'].sketches.changeKey(fromName='__profile__', 
+    toName='wall-4')
+s1.unsetPrimaryObject()	
+
+#: Create wall-5 sketch
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=200.0)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=STANDALONE)
+
+s1.Line(point1=(0, 0), point2=(0, hhh))
+s1.Line(point1=(L67, hhh), point2=(0, hhh))
+s1.Line(point1=(L67, hhh), point2=(L67, 0))
+s1.Line(point1=(0, 0), point2=(L67, 0))
+
+mdb.models['Model-1'].sketches.changeKey(fromName='__profile__', 
+    toName='wall-5')
+s1.unsetPrimaryObject()	
+
+	
+	
+	
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)	
+
+import bpCustomData
+bpCustomData.createBpCustomData()
+
+#mdb.save()
+#: The model database has been saved to "C:\BRIGADE Plus Work Directory\Testx.cae".
+###########################################################################################
+#: set the wall-1
+#: e. which edge and d [which datum] and the origin for the sketch coordinatesystem
+
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)
+session.viewports['Viewport: 1'].view.setProjection(projection=PARALLEL)
+p = mdb.models['Model-1'].parts['BP1']
+e, d = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d[2], sketchUpEdge=e.findAt(coordinates=(
+    x2, y2, 0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, 
+    origin=(x1, y1, 0.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=125.72, gridSpacing=3.14, transform=t)
+	
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['BP1']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['wall-1'])
+session.viewports['Viewport: 1'].view.fitView()
+
+#: Info: 4 entities copied from wall-1.
+s.rotate(centerPoint=(0.0, 0.0), angle=90.0, objectList=(g.findAt((0.0, 
+    hhh)), g.findAt((L12, hhh)), g.findAt((L12, hhh/2)), g.findAt((
+    L12, 0.0))))
+	
+p.Shell(sketchPlane=d[2], sketchUpEdge=e.findAt(coordinates=(x1, y1, 
+    0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+#: set the wall-2
+#: e. which edge and d [which datum] and the origin for the sketch coordinatesystem
+
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)
+session.viewports['Viewport: 1'].view.setProjection(projection=PARALLEL)
+p = mdb.models['Model-1'].parts['BP1']
+e, d = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d[3], sketchUpEdge=e.findAt(coordinates=(
+    x3, y3, 0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, 
+    origin=(x2, y2, 0.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=125.72, gridSpacing=3.14, transform=t)
+	
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['BP1']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['wall-2'])
+session.viewports['Viewport: 1'].view.fitView()
+
+#: Info: 4 entities copied from wall-2.
+s.rotate(centerPoint=(0.0, 0.0), angle=90.0, objectList=(g.findAt((0.0, 
+    hhh)), g.findAt((L23, hhh)), g.findAt((L23, hhh/2)), g.findAt((
+    L23, 0.0))))
+	
+p.Shell(sketchPlane=d[3], sketchUpEdge=e.findAt(coordinates=(x3, y3, 
+    0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+#: set the wall-3
+#: e. which edge and d [which datum] and the origin for the sketch coordinatesystem
+
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)
+session.viewports['Viewport: 1'].view.setProjection(projection=PARALLEL)
+p = mdb.models['Model-1'].parts['BP1']
+e, d = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d[4], sketchUpEdge=e.findAt(coordinates=(
+    x4, y4, 0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, 
+    origin=(x3, y3, 0.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=125.72, gridSpacing=3.14, transform=t)
+	
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['BP1']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['wall-3'])
+session.viewports['Viewport: 1'].view.fitView()
+
+#: Info: 4 entities copied from wall-3
+s.rotate(centerPoint=(0.0, 0.0), angle=90.0, objectList=(g.findAt((0.0, 
+    hhh)), g.findAt((L34, hhh)), g.findAt((L34, hhh/2)), g.findAt((
+    L34, 0.0))))
+	
+p.Shell(sketchPlane=d[4], sketchUpEdge=e.findAt(coordinates=(x4, y4, 
+    0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+#: set the wall-4
+#: e. which edge and d [which datum] and the origin for the sketch coordinatesystem
+
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)
+session.viewports['Viewport: 1'].view.setProjection(projection=PARALLEL)
+p = mdb.models['Model-1'].parts['BP1']
+e, d = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d[5], sketchUpEdge=e.findAt(coordinates=(
+    x5, y5, 0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, 
+    origin=(x4, y4, 0.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=125.72, gridSpacing=3.14, transform=t)
+	
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['BP1']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['wall-4'])
+session.viewports['Viewport: 1'].view.fitView()
+
+#: Info: 4 entities copied from wall-4
+s.rotate(centerPoint=(0.0, 0.0), angle=90.0, objectList=(g.findAt((0.0, 
+    hhh)), g.findAt((L45, hhh)), g.findAt((L45, hhh/2)), g.findAt((
+    L45, 0.0))))
+	
+p.Shell(sketchPlane=d[5], sketchUpEdge=e.findAt(coordinates=(x5, y5, 
+    0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+#: set the wall-5
+#: e. which edge and d [which datum] and the origin for the sketch coordinatesystem
+
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)
+session.viewports['Viewport: 1'].view.setProjection(projection=PARALLEL)
+p = mdb.models['Model-1'].parts['BP1']
+e, d = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d[6], sketchUpEdge=e.findAt(coordinates=(
+    x7, y7, 0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, 
+    origin=(x6, y6, 0.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=125.72, gridSpacing=3.14, transform=t)
+	
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['BP1']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['wall-5'])
+session.viewports['Viewport: 1'].view.fitView()
+
+#: Info: 4 entities copied from wall-5
+s.rotate(centerPoint=(0.0, 0.0), angle=90.0, objectList=(g.findAt((0.0, 
+    hhh)), g.findAt((L67, hhh)), g.findAt((L67, hhh/2)), g.findAt((
+    L67, 0.0))))
+	
+p.Shell(sketchPlane=d[6], sketchUpEdge=e.findAt(coordinates=(x7, y7, 
+    0.0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+# Datum plan for the topplate	
+p = mdb.models['Model-1'].parts['BP1']
+v1 = p.vertices
+
+p.DatumPlaneByThreePoints(point1=v1.findAt(coordinates=(x5, y5, hhh)), 
+    point2=v1.findAt(coordinates=(x1, y1, hhh)), point3=v1.findAt(
+    coordinates=(x4, y4, hhh)))
+mdb.models['Model-1'].parts['BP1'].features.changeKey(fromName='Datum plane-1', 
+    toName='DP21')	
+	
+#Sketch the top plate
+
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=200.0)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+
+s.Line(point1=(x1,y1),point2=(x2,y2))
+s.Line(point1=(x2,y2),point2=(x3,y3))
+s.Line(point1=(x3,y3),point2=(x4,y4))
+s.Line(point1=(x4,y4),point2=(x5,y5))
+s.Line(point1=(x5,y5),point2=(x6,y6))
+s.Line(point1=(x6,y6),point2=(x7,y7))
+s.Line(point1=(x7,y7),point2=(x1,y1))
+
+mdb.models['Model-1'].sketches.changeKey(fromName='__profile__', 
+    toName='TP1')
+	
+p = mdb.models['Model-1'].parts['BP1']
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)	
+
+##########################   ADDED MANUALLY !! ##############################################
+mdb.models['Model-1'].ConstrainedSketch(gridSpacing=3.23, name='__profile__', 
+    sheetSize=129.32, transform=
+    mdb.models['Model-1'].parts['BP1'].MakeSketchTransform(
+    sketchPlane=mdb.models['Model-1'].parts['BP1'].datums[12], 
+    sketchPlaneSide=SIDE1, 
+    sketchUpEdge=mdb.models['Model-1'].parts['BP1'].edges.findAt((14.1, 0.6, 
+    5.82), ), sketchOrientation=RIGHT, origin=(28.2, 6.235, 5.82)))
+mdb.models['Model-1'].parts['BP1'].projectReferencesOntoSketch(filter=
+    COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+mdb.models['Model-1'].sketches['__profile__'].retrieveSketch(sketch=
+    mdb.models['Model-1'].sketches['TP1'])
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((1.95, 11.4465))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((25.3475, 11.37))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((49.5175, 
+    11.4725))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((54.32, 11.7225))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((56.4, 6.235))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((28.2, 0.6))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((0.0, 6.0615))
+mdb.models['Model-1'].sketches['__profile__'].rotate(angle=90.0, centerPoint=(
+    0.0, 0.6), objectList=(
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((1.95, 
+    11.4465), ), mdb.models['Model-1'].sketches['__profile__'].geometry.findAt(
+    (25.3475, 11.37), ), 
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((49.5175, 
+    11.4725), ), mdb.models['Model-1'].sketches['__profile__'].geometry.findAt(
+    (54.32, 11.7225), ), 
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((56.4, 
+    6.235), ), mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((
+    28.2, 0.6), ), 
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((0.0, 
+    6.0615), )))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-10.8465, 2.55))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-10.77, 
+    25.9475))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-10.8725, 
+    50.1175))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-11.1225, 
+    54.92))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-5.635, 57.0))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((0.0, 28.8))
+mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-5.4615, 0.6))
+mdb.models['Model-1'].sketches['__profile__'].move(objectList=(
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-10.8465, 
+    2.55), ), mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((
+    -10.77, 25.9475), ), 
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-10.8725, 
+    50.1175), ), mdb.models['Model-1'].sketches['__profile__'].geometry.findAt(
+    (-11.1225, 54.92), ), 
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-5.635, 
+    57.0), ), mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((
+    0.0, 28.8), ), 
+    mdb.models['Model-1'].sketches['__profile__'].geometry.findAt((-5.4615, 
+    0.6), )), vector=(5.635, -28.8))
+mdb.models['Model-1'].parts['BP1'].Shell(sketch=
+    mdb.models['Model-1'].sketches['__profile__'], sketchOrientation=RIGHT, 
+    sketchPlane=mdb.models['Model-1'].parts['BP1'].datums[12], sketchPlaneSide=
+    SIDE1, sketchUpEdge=mdb.models['Model-1'].parts['BP1'].edges.findAt((14.1, 
+    0.6, 5.82), ))
+del mdb.models['Model-1'].sketches['__profile__']
+##########################################################################################
+
+#: CREATE  extra edge 1 and 2
+	
+# Datum plan for the extra edge 2
+	
+
+p = mdb.models['Model-1'].parts['BP1']
+v1 = p.vertices
+
+p.DatumPlaneByThreePoints(point1=v1.findAt(coordinates=(x5, y5, 0)), 
+    point2=v1.findAt(coordinates=(x1, y1, 0)), point3=v1.findAt(
+    coordinates=(x4, y4, 0)))
+	
+	
+p = mdb.models['Model-1'].parts['BP1']
+e, d1 = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d1[14], sketchUpEdge=e.findAt(
+    coordinates=(x1, y1, 0)), sketchPlaneSide=SIDE1, 
+    sketchOrientation=RIGHT, origin=(0, 0, 0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+    sheetSize=145.89, gridSpacing=3.64, transform=t)
+	
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['BP1']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+
+s.Line(point1=(x07,y07),point2=(x06,y06))
+s.Line(point1=(x06,y06),point2=(x6,y6))
+s.Line(point1=(x6,y6),point2=(x7,y7))	
+s.Line(point1=(x7,y7),point2=(x07,y07))	
+
+
+s.Line(point1=(x01,y01),point2=(x02,y02))
+s.Line(point1=(x02,y02),point2=(x03,y03))
+s.Line(point1=(x03,y03),point2=(x04,y04))
+s.Line(point1=(x04,y04),point2=(x05,y05))
+s.Line(point1=(x05,y05),point2=(x5,y5))
+s.Line(point1=(x5,y5),point2=(x4,y4))
+s.Line(point1=(x4,y4),point2=(x3,y3))
+s.Line(point1=(x3,y3),point2=(x2,y2))
+s.Line(point1=(x2,y2),point2=(x1,y1))
+s.Line(point1=(x1,y1),point2=(x01,y01))
+
+	
+	
+p = mdb.models['Model-1'].parts['BP1']
+e, d1 = p.edges, p.datums
+p.Shell(sketchPlane=d1[14], sketchUpEdge=e.findAt(coordinates=(x1,y1,0)), sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+p = mdb.models['Model-1'].parts['BP1']
+e, d1 = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d1[14], sketchUpEdge=e.findAt(
+    coordinates=(x1, y1, 0)), sketchPlaneSide=SIDE1, 
+    sketchOrientation=RIGHT, origin=(0, 0, 0))
+
+	
+	
+	
+
+	
+
+##############################################################################################################################
+#########################################################################################################
+####################################################################################
+
+## Material and sections
+
+session.viewports['Viewport: 1'].partDisplay.setValues(sectionAssignments=ON, 
+    engineeringFeatures=ON)
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=OFF)
+
+ro = 2500			# Density
+Ec = 30000000000 	# 30Gpa Stiffnes modulus
+Poissons = 0.2		# Poisson's ratio  
+alfaTemp = 1E-05	# Expansion coefficient alfa
+
+mdb.models['Model-1'].Material(name='CONCRETE30')
+mdb.models['Model-1'].materials['CONCRETE30'].Density(table=((ro, ), ))
+mdb.models['Model-1'].materials['CONCRETE30'].Elastic(table=((Ec, 
+    Poissons), ))
+mdb.models['Model-1'].materials['CONCRETE30'].Expansion(table=((alfaTemp, ), ))
+	
+##Section ##
+mdb.models['Model-1'].HomogeneousShellSection(idealization=NO_IDEALIZATION, 
+    integrationRule=SIMPSON, material='CONCRETE30', nTemp=2, name='Wall', 
+    numIntPts=5, poissonDefinition=DEFAULT, preIntegrate=OFF, temperature=
+    POINTWISE, thickness=0.5, thicknessField='', thicknessModulus=None, 
+    thicknessType=UNIFORM, useDensity=OFF)
+mdb.models['Model-1'].HomogeneousShellSection(idealization=NO_IDEALIZATION, 
+    integrationRule=SIMPSON, material='CONCRETE30', nTemp=2, name='BottomPlate'
+    , numIntPts=5, poissonDefinition=DEFAULT, preIntegrate=OFF, temperature=
+    POINTWISE, thickness=0.6, thicknessField='', thicknessModulus=None, 
+    thicknessType=UNIFORM, useDensity=OFF)
+mdb.models['Model-1'].HomogeneousShellSection(idealization=NO_IDEALIZATION, 
+    integrationRule=SIMPSON, material='CONCRETE30', nTemp=2, name='TopPlate', 
+    numIntPts=5, poissonDefinition=DEFAULT, preIntegrate=OFF, temperature=
+    POINTWISE, thickness=0.5, thicknessField='', thicknessModulus=None, 
+    thicknessType=UNIFORM, useDensity=OFF)
+
+#mine - not working
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='TopPlate', partLevelData=False, pointDataFormat=XYZ, 
+    regionType=POINT, xyzPointData=((x1, y1, hhh, 0.925), (x7, y7, 
+    hhh, 0.8), (x2, y2, hhh, 0.925), (x2, y7, hhh, 0.8), (x3, y3, hhh, 0.925), (x3, y7, hhh, 0.8), (x4, y4, hhh, 0.925), (x4, y7, hhh, 0.8), (x5, y5, hhh, 0.925), (x6, y6, hhh, 0.8)))
+	
+
+	
+mdb.models['Model-1'].HomogeneousShellSection(idealization=NO_IDEALIZATION, 
+    integrationRule=SIMPSON, material='CONCRETE30', nTemp=2, name='TopPlate', 
+    numIntPts=5, poissonDefinition=DEFAULT, preIntegrate=OFF, temperature=
+    POINTWISE, thickness=0.0, thicknessField='TopPlate', thicknessModulus=None, 
+    thicknessType=ANALYTICAL_FIELD, useDensity=OFF)
+	
+
+	
+	
+#Assign sections
+mdb.models['Model-1'].parts['BP1'].Set(faces=
+    mdb.models['Model-1'].parts['BP1'].faces.findAt(((x1, y1, hhh/2), 
+    ), ((x3, y3, hhh/2), ), ((x4, y4, hhh/2), ),((x5, y5, hhh/2), ),((x6, y6, hhh/2), ) ), name='Set-1')
+mdb.models['Model-1'].parts['BP1'].SectionAssignment(offset=0.0, offsetField=''
+    , offsetType=MIDDLE_SURFACE, region=
+    mdb.models['Model-1'].parts['BP1'].sets['Set-1'], sectionName='Wall', 
+    thicknessAssignment=FROM_SECTION)
+mdb.models['Model-1'].parts['BP1'].Set(faces=
+    mdb.models['Model-1'].parts['BP1'].faces.findAt(((21.30000, 0.3, 0.0), ), 
+    ((1.839667, 7.394333, 0.0), ), ((x01, y01, 0), )  ), name='Set-2')
+mdb.models['Model-1'].parts['BP1'].SectionAssignment(offset=0.0, offsetField=''
+    , offsetType=MIDDLE_SURFACE, region=
+    mdb.models['Model-1'].parts['BP1'].sets['Set-2'], sectionName='BottomPlate'
+    , thicknessAssignment=FROM_SECTION)
+mdb.models['Model-1'].parts['BP1'].Set(faces=
+    mdb.models['Model-1'].parts['BP1'].faces.findAt(((1.839667, 7.394333, 
+    5.82), )), name='Set-3')
+
+mdb.models['Model-1'].parts['BP1'].SectionAssignment(offset=0.0, offsetField=''
+    , offsetType=MIDDLE_SURFACE, region=
+    mdb.models['Model-1'].parts['BP1'].sets['Set-3'], sectionName='TopPlate', 
+    thicknessAssignment=FROM_SECTION)
+
+
+
+## Assigning Normals
+
+mdb.models['Model-1'].parts['BP1'].flipNormal(regions=Region(
+    faces=mdb.models['Model-1'].parts['BP1'].faces.findAt((((x1+x7)/2, (y1+y7)/2, hhh), 
+    (0.0, 0.0, 1.0)), )))
+mdb.models['Model-1'].parts['BP1'].flipNormal(regions=Region(
+    faces=mdb.models['Model-1'].parts['BP1'].faces.findAt((((x1+x7)/2, (y1+y7)/2, 0), (
+    0.0, 0.0, 1.0)), )))
+mdb.models['Model-1'].parts['BP1'].flipNormal(regions=Region(
+    faces=mdb.models['Model-1'].parts['BP1'].faces.findAt(((x1, (y7+y07)/2, 
+    0.0), (0.0, 0.0, 1.0)), )))
+mdb.models['Model-1'].parts['BP1'].flipNormal(regions=Region(
+    faces=mdb.models['Model-1'].parts['BP1'].faces.findAt(((x1, (y1+y01)/2, 0.0), 
+    (0.0, 0.0, 1.0)), )))	
+	
+### Assembly ###
+
+p1 = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p1)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+a1 = mdb.models['Model-1'].rootAssembly
+p = mdb.models['Model-1'].parts['BP1']
+a1.Instance(name='BP1-1', part=p, dependent=OFF)
+
+### Spring support
+mdb.models['Model-1'].rootAssembly.Set(faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((1.3, 
+    11.872, 0.0), ), ((18.800001, 0.2, 0.0), ), ((1.3, 7.831, 0.0), ), ), name=
+    'Spring-Bed-Set-1')
+	
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(mesh=OFF, 
+    interactions=ON, constraints=ON, connectors=ON, engineeringFeatures=ON, 
+    optimizationTasks=OFF, geometricRestrictions=OFF, stopConditions=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+    meshTechnique=OFF)
+mdb.customData.interaction.models['Model-1'].SpringToGround(
+    name='Spring-To-Ground-1')
+
+
+
+dataManagement.modules.interaction.registerFormHandling.SpringToGround(
+    modelName='Model-1', definitionName='Spring-To-Ground-1', 
+    referenceCsysName='(Global)', hostRegionName='Spring-Bed-Set-1', 
+    method=LINEAR_DEFINITION, U1=True, U2=True, U3=True, UR1=False, UR2=False, 
+    UR3=False, D11=39e5, D22=39e5, D33=39e6)
+
+
+	
+## Step - Dead Load ##
+
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Initial')
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Dead Load', 
+    previous='Initial')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Dead Load')
+
+## LOAD ##
+
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+mdb.models['Model-1'].Gravity(name='Dead Load', createStepName='Dead Load', 
+    comp3=-9.81, distributionType=UNIFORM, field='')
+	
+###############################################################################################################
+
+## Steps ##
+
+### Import the design code ##### ##### #### #### 
+
+dataManagement.modules.designCodes.registerFormHandling.ImportDesignCode(
+    designCodeName='TRV publ 2011:085 med TRVFS 2011:12', designCodeId='514', 
+    modelName='Model-1', basicLoadCases=True, vehicles=True, 
+    loadCombinations=True, lengthScale=1, forceScale=1)
+#
+
+#----STEPS----#
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+p = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
+
+#
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+p = mdb.models['Model-1'].parts['BP1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
+	
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Overfyllning', 
+    previous='Dead Load')
+
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='EarthPressureLOWWater', 
+    previous='Overfyllning')
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='EarthPressureHIGHWater', 
+    previous='Overfyllning')
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Ballast', 
+    previous='Dead Load')
+
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='TempDiffLow', 
+    previous='Dead Load')
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='TempDiffHigh', 
+    previous='TempDiffLow')
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Shrinkage', 
+    previous='TempDiffHigh')
+	
+
+	
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Service_transport', 
+    previous='TempDiffHigh')
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+
+## Reconnect the steps in the design manager	
+mdb.customData.designCodes.models['Model-1'].loads['TempDiffLow'].stepName = None
+mdb.models['Model-1'].steps['TempDiffLow'].suppress()
+
+dataManagement.modules.step.registerFormHandling.ActivateBasicLoad(
+    modelName='Model-1', loadId='TEMPERATURE_LOW', 
+    stepNameExisting='TempDiffLow')		
+
+
+## Reconnect the streps in the design manager	
+mdb.customData.designCodes.models['Model-1'].loads['TempDiffHigh'].stepName = None
+mdb.models['Model-1'].steps['TempDiffHigh'].suppress()
+
+dataManagement.modules.step.registerFormHandling.ActivateBasicLoad(
+    modelName='Model-1', loadId='TEMPERATURE_HIGH', 
+    stepNameExisting='TempDiffHigh')	
+
+## Reconnect the streps in the design manager	
+mdb.customData.designCodes.models['Model-1'].loads['Shrinkage'].stepName = None
+mdb.models['Model-1'].steps['Shrinkage'].suppress()
+
+dataManagement.modules.step.registerFormHandling.ActivateBasicLoad(
+    modelName='Model-1', loadId='SHRINKAGE', 
+    stepNameExisting='Shrinkage')
+#
+## Reconnect the streps in the design manager	
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
+#
+mdb.customData.designCodes.models['Model-1'].loads['EarthPressureHIGHWater'].stepName = None
+mdb.models['Model-1'].steps['EarthPressureHIGHWater'].suppress()
+### Reconnect the streps in the design manager
+
+dataManagement.modules.step.registerFormHandling.ActivateBasicLoad(
+    modelName='Model-1', loadId='EARTH_PRESSURE_HIGH_WATER', 
+    stepNameExisting='EarthPressureHIGHWater')
+	
+### Reconnect the streps in the design manager
+mdb.customData.designCodes.models['Model-1'].loads['EarthPressureLOWWater'].stepName = None
+mdb.models['Model-1'].steps['EarthPressureLOWWater'].suppress()
+#
+dataManagement.modules.step.registerFormHandling.ActivateBasicLoad(
+    modelName='Model-1', loadId='EARTH_PRESSURE_LOW_WATER', 
+    stepNameExisting='EarthPressureLOWWater')
+#
+
+
+dataManagement.modules.step.registerFormHandling.ActivateBasicLoad(
+    modelName='Model-1', loadId='DEAD_WEIGHT', stepNameExisting='Dead Load')
+
+
+	
+################ Steps braking, lateral and centrifugal & others
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Braking_Train_1', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Braking_Train_1')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Braking_Train_2', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Braking_Train_2')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='CentrifugalCase1', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='CentrifugalCase1')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='CentrifugalCase2', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='CentrifugalCase2')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='LateralCase1', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='LateralCase1')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='LateralCase2', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='LateralCase2')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Air_1p_neg', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Air_1p_neg')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Air_1p_pos', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Air_1p_pos')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Air_3v_neg', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Air_3v_neg')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Air_3v_pos', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Air_3v_pos')
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Service_transport', 
+    previous='EarthPressureLOWWater')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Service_transport')
+
+
+
+
+### HIGH
+# #----TEMPERATURE----#
+## Select all and name as total
+###############################
+
+p = mdb.models['Model-1'].parts['BP1']
+f = p.faces
+faces = f.findAt((((x1+x2)/2, (y1+y2)/2, hhh/2), ),   #walls
+				 (((x2+x3)/2, (y2+y3)/2, hhh/2), ),	  #walls
+				 (((x3+x4)/2, (y3+y4)/2, hhh/2), ),   #walls
+				 (((x4+x5)/2, (y4+y5)/2, hhh/2), ),   #walls 
+				 (((x6+x7)/2, (y6+y7)/2, hhh/2), ),   #walls  
+				 (((x1+x7)/2, (y1+y7)/2, 0), ),       #bottom plate
+				 (((x1+x01)/2, (y1+y01)/2, 0), ),     #bottom plate
+				 (((x7+x07)/2, (y7+y07)/2, 0), ),     #bottom plate
+				 (((x1+x7)/2, (y1+y7)/2, hhh), ))     #top plate
+
+#
+region_total = p.Set(faces=faces, name='Total')	
+
+#----TEMPERATURE DIFF LOW----#
+
+############################
+
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='TempDiffLow')
+a1 = mdb.models['Model-1'].rootAssembly
+region = a1.sets['BP1-1.Total']
+mdb.models['Model-1'].Temperature(name='TempDiffLow', 
+    createStepName='TempDiffLow', region=region, distributionType=UNIFORM, 
+    crossSectionDistribution=CONSTANT_THROUGH_THICKNESS, magnitudes=(12.0, ))
+
+#----TEMPERATURE DIFF HIGH----#
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='TempDiffHigh')
+a1 = mdb.models['Model-1'].rootAssembly
+region = a1.sets['BP1-1.Total']
+mdb.models['Model-1'].Temperature(name='TempDiffHigh', 
+    createStepName='TempDiffHigh', region=region, distributionType=UNIFORM, 
+    crossSectionDistribution=CONSTANT_THROUGH_THICKNESS, magnitudes=(-18, ))	
+#----Shrinkage----#
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Shrinkage')
+a1 = mdb.models['Model-1'].rootAssembly
+region = a1.sets['BP1-1.Total']
+mdb.models['Model-1'].Temperature(name='Shrinkage', createStepName='Shrinkage', 
+    region=region, distributionType=UNIFORM, 
+    crossSectionDistribution=CONSTANT_THROUGH_THICKNESS, magnitudes=(-22.85, ))	
+	
+#----- Air Pressure -------#
+
+#Defining surfaces
+mdb.models['Model-1'].rootAssembly.Surface(name='Air1', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    18.800001, 0.6, 1.94), ), ((32.496665, 11.37, 1.94), ), ((1.3, 7.831, 0.0), 
+    ), ), side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((1.3, 
+    7.831, 5.82), )))
+mdb.models['Model-1'].rootAssembly.Surface(name='Air2', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((2.6, 
+    11.421, 1.94), )))
+mdb.models['Model-1'].rootAssembly.Surface(name='Air3', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    50.425001, 11.506667, 1.94), )))
+mdb.models['Model-1'].rootAssembly.Surface(name='Air4', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    55.013335, 11.771667, 1.94), )))
+
+#Air_1p_pos
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_pos', 
+    directionVector=((0.0, 0.0, 0.0), (2.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=5.0, name='Air_1p_pos1', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air1'], traction=
+    GENERAL)
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_pos', 
+    directionVector=((x1, y1, 0.0), (x2, y2, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=2.0, name='Air_1p_pos2', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air2'], traction=
+    GENERAL)
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_pos', 
+    directionVector=((x3, y3, 0.0), (x4, y4, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=3.0, name='Air_1p_pos3', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air3'], traction=
+    GENERAL)
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_pos', 
+    directionVector=((x4, y4, 0.0), (x5, y5, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=4.0, name='Air_1p_pos4', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air4'], traction=
+    GENERAL)
+	
+#Air_1p_neg
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_neg', 
+    directionVector=((0.0, 0.0, 0.0), (2.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=-5.0, name='Air_1p_neg1', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air1'], traction=
+    GENERAL)
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_neg', 
+    directionVector=((x1, y1, 0.0), (x2, y2, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=-2.0, name='Air_1p_neg2', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air2'], traction=
+    GENERAL)
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_neg', 
+    directionVector=((x3, y3, 0.0), (x4, y4, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=-3.0, name='Air_1p_neg3', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air3'], traction=
+    GENERAL)
+mdb.models['Model-1'].SurfaceTraction(createStepName='Air_1p_neg', 
+    directionVector=((x4, y4, 0.0), (x5, y5, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=-4.0, name='Air_1p_neg4', 
+    region=mdb.models['Model-1'].rootAssembly.surfaces['Air4'], traction=
+    GENERAL)	
+	
+#Air_3v_pos
+mdb.models['Model-1'].rootAssembly.Surface(name='Air3v1', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    18.800001, 0.6, 1.94), ), ((55.013335, 11.771667, 1.94), ), ((50.425001, 
+    11.506667, 1.94), ), ((32.496665, 11.37, 1.94), ), ((2.6, 11.421, 1.94), ), 
+    ((1.3, 7.831, 0.0), ), ), side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((1.3, 
+    7.831, 5.82), )))
+mdb.models['Model-1'].Pressure(createStepName='Air_3v_pos', distributionType=
+    UNIFORM, field='', magnitude=3000.0, name='Air_3v_pos1', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Air3v1'])
+
+#Air_3v_neg
+mdb.models['Model-1'].rootAssembly.Surface(name='Air3v2', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    18.800001, 0.6, 1.94), ), ((55.013335, 11.771667, 1.94), ), ((50.425001, 
+    11.506667, 1.94), ), ((32.496665, 11.37, 1.94), ), ((2.6, 11.421, 1.94), ), 
+    ((1.3, 7.831, 0.0), ), ), side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((1.3, 
+    7.831, 5.82), )))
+mdb.models['Model-1'].Pressure(createStepName='Air_3v_neg', distributionType=
+    UNIFORM, field='', magnitude=-3000.0, name='Air_3v_neg1', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Air3v1'])
+
+	
+
+#################### TRAIN LOAD ###########################
+### VEHICLE MANAGER
+## C14, 1 wagon
+
+mdb.customData.designCodes.models['Model-1'].Load(name='C141_POS', 
+    loadName='C141_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C141_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), 
+	('AXLE', 2.3, 120000.0, 0.0), 
+	('AXLE', 11.0, 120000.0, 0.0), 
+	('AXLE', 13.3, 120000.0, 0.0)))
+## C14, 2 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C142_POS', 
+    loadName='C142_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C142_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), 
+	('AXLE', 2.3, 120000.0, 0.0), 
+	('AXLE', 11.0, 120000.0, 0.0), 
+	('AXLE', 13.3, 120000.0, 0.0), 
+	('AXLE', 17.4, 120000.0, 0.0), 
+	('AXLE', 19.7, 120000.0, 0.0), 
+	('AXLE', 28.4, 120000.0, 0.0), 
+	('AXLE', 30.7, 120000.0, 0.0)))
+## C14, 3 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C143_POS', 
+    loadName='C143_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C143_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), 
+	('AXLE', 2.3, 120000.0, 0.0), 
+	('AXLE', 11.0, 120000.0, 0.0), 
+	('AXLE', 13.3, 120000.0, 0.0), 
+	('AXLE', 17.4, 120000.0, 0.0), 
+	('AXLE', 19.7, 120000.0, 0.0), 
+	('AXLE', 28.4, 120000.0, 0.0), 
+	('AXLE', 30.7, 120000.0, 0.0), 
+	('AXLE', 34.8, 120000.0, 0.0), 
+	('AXLE', 37.1, 120000.0, 0.0), 
+	('AXLE', 45.8, 120000.0, 0.0), 
+	('AXLE', 48.1, 120000.0, 0.0)))
+## C14, 4 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C144_POS', 
+    loadName='C144_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C144_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), 
+	('AXLE', 2.3, 120000.0, 0.0), 
+	('AXLE', 11.0, 120000.0, 0.0), 
+	('AXLE', 13.3, 120000.0, 0.0), 
+	('AXLE', 17.4, 120000.0, 0.0), 
+	('AXLE', 19.7, 120000.0, 0.0), 
+	('AXLE', 28.4, 120000.0, 0.0), 
+	('AXLE', 30.7, 120000.0, 0.0), 
+	('AXLE', 34.8, 120000.0, 0.0), 
+	('AXLE', 37.1, 120000.0, 0.0), 
+	('AXLE', 45.8, 120000.0, 0.0), 
+	('AXLE', 48.1, 120000.0, 0.0), 
+	('AXLE', 52.2, 120000.0, 0.0), 
+	('AXLE', 54.5, 120000.0, 0.0), 
+	('AXLE', 63.2, 120000.0, 0.0), 
+	('AXLE', 65.5, 120000.0, 0.0)))
+## C14, 5 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C145_POS', 
+    loadName='C145_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C145_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), ('AXLE', 2.3, 120000.0, 0.0), (
+    'AXLE', 11.0, 120000.0, 0.0), ('AXLE', 13.3, 120000.0, 0.0), ('AXLE', 17.4, 
+    120000.0, 0.0), ('AXLE', 19.7, 120000.0, 0.0), ('AXLE', 28.4, 120000.0, 
+    0.0), ('AXLE', 30.7, 120000.0, 0.0), ('AXLE', 34.8, 120000.0, 0.0), (
+    'AXLE', 37.1, 120000.0, 0.0), ('AXLE', 45.8, 120000.0, 0.0), ('AXLE', 48.1, 
+    120000.0, 0.0), ('AXLE', 52.2, 120000.0, 0.0), ('AXLE', 54.5, 120000.0, 
+    0.0), ('AXLE', 63.2, 120000.0, 0.0), ('AXLE', 65.5, 120000.0, 0.0), (
+    'AXLE', 69.6, 120000.0, 0.0), ('AXLE', 71.9, 120000.0, 0.0), ('AXLE', 80.6, 
+    120000.0, 0.0), ('AXLE', 82.9, 120000.0, 0.0)))
+## C14, 6 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C146_POS', 
+    loadName='C146_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C146_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), ('AXLE', 2.3, 120000.0, 0.0), (
+    'AXLE', 11.0, 120000.0, 0.0), ('AXLE', 13.3, 120000.0, 0.0), ('AXLE', 17.4, 
+    120000.0, 0.0), ('AXLE', 19.7, 120000.0, 0.0), ('AXLE', 28.4, 120000.0, 
+    0.0), ('AXLE', 30.7, 120000.0, 0.0), ('AXLE', 34.8, 120000.0, 0.0), (
+    'AXLE', 37.1, 120000.0, 0.0), ('AXLE', 45.8, 120000.0, 0.0), ('AXLE', 48.1, 
+    120000.0, 0.0), ('AXLE', 52.2, 120000.0, 0.0), ('AXLE', 54.5, 120000.0, 
+    0.0), ('AXLE', 63.2, 120000.0, 0.0), ('AXLE', 65.5, 120000.0, 0.0), (
+    'AXLE', 69.6, 120000.0, 0.0), ('AXLE', 71.9, 120000.0, 0.0), ('AXLE', 80.6, 
+    120000.0, 0.0), ('AXLE', 82.9, 120000.0, 0.0), ('AXLE', 87.0, 120000.0, 
+    0.0), ('AXLE', 89.3, 120000.0, 0.0), ('AXLE', 98.0, 120000.0, 0.0), (
+    'AXLE', 100.3, 120000.0, 0.0)))
+## C14, 7 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C147_POS', 
+    loadName='C147_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C147_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), ('AXLE', 2.3, 120000.0, 0.0), (
+    'AXLE', 11.0, 120000.0, 0.0), ('AXLE', 13.3, 120000.0, 0.0), ('AXLE', 17.4, 
+    120000.0, 0.0), ('AXLE', 19.7, 120000.0, 0.0), ('AXLE', 28.4, 120000.0, 
+    0.0), ('AXLE', 30.7, 120000.0, 0.0), ('AXLE', 34.8, 120000.0, 0.0), (
+    'AXLE', 37.1, 120000.0, 0.0), ('AXLE', 45.8, 120000.0, 0.0), ('AXLE', 48.1, 
+    120000.0, 0.0), ('AXLE', 52.2, 120000.0, 0.0), ('AXLE', 54.5, 120000.0, 
+    0.0), ('AXLE', 63.2, 120000.0, 0.0), ('AXLE', 65.5, 120000.0, 0.0), (
+    'AXLE', 69.6, 120000.0, 0.0), ('AXLE', 71.9, 120000.0, 0.0), ('AXLE', 80.6, 
+    120000.0, 0.0), ('AXLE', 82.9, 120000.0, 0.0), ('AXLE', 87.0, 120000.0, 
+    0.0), ('AXLE', 89.3, 120000.0, 0.0), ('AXLE', 98.0, 120000.0, 0.0), (
+    'AXLE', 100.3, 120000.0, 0.0), ('AXLE', 104.4, 120000.0, 0.0), ('AXLE', 
+    106.7, 120000.0, 0.0), ('AXLE', 115.4, 120000.0, 0.0), ('AXLE', 117.7, 
+    120000.0, 0.0)))
+## C14, 8 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C148_POS', 
+    loadName='C148_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C148_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 120000.0, 0.0), ('AXLE', 2.3, 120000.0, 0.0), (
+    'AXLE', 11.0, 120000.0, 0.0), ('AXLE', 13.3, 120000.0, 0.0), ('AXLE', 17.4, 
+    120000.0, 0.0), ('AXLE', 19.7, 120000.0, 0.0), ('AXLE', 28.4, 120000.0, 
+    0.0), ('AXLE', 30.7, 120000.0, 0.0), ('AXLE', 34.8, 120000.0, 0.0), (
+    'AXLE', 37.1, 120000.0, 0.0), ('AXLE', 45.8, 120000.0, 0.0), ('AXLE', 48.1, 
+    120000.0, 0.0), ('AXLE', 52.2, 120000.0, 0.0), ('AXLE', 54.5, 120000.0, 
+    0.0), ('AXLE', 63.2, 120000.0, 0.0), ('AXLE', 65.5, 120000.0, 0.0), (
+    'AXLE', 69.6, 120000.0, 0.0), ('AXLE', 71.9, 120000.0, 0.0), ('AXLE', 80.6, 
+    120000.0, 0.0), ('AXLE', 82.9, 120000.0, 0.0), ('AXLE', 87.0, 120000.0, 
+    0.0), ('AXLE', 89.3, 120000.0, 0.0), ('AXLE', 98.0, 120000.0, 0.0), (
+    'AXLE', 100.3, 120000.0, 0.0), ('AXLE', 104.4, 120000.0, 0.0), ('AXLE', 
+    106.7, 120000.0, 0.0), ('AXLE', 115.4, 120000.0, 0.0), ('AXLE', 117.7, 
+    120000.0, 0.0), ('AXLE', 121.8, 120000.0, 0.0), ('AXLE', 124.1, 120000.0, 
+    0.0), ('AXLE', 132.8, 120000.0, 0.0), ('AXLE', 135.1, 120000.0, 0.0)))
+## C20, 1 wagon
+mdb.customData.designCodes.models['Model-1'].Load(name='C201_POS', 
+    loadName='C201_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C201_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 110000.0, 0.0), ('AXLE', 2.3, 110000.0, 0.0), (
+    'AXLE', 13.735, 146000.0, 0.0), ('AXLE', 16.035, 146000.0, 0.0), ('AXLE', 
+    25.245, 146000.0, 0.0), ('AXLE', 27.545, 146000.0, 0.0), ('AXLE', 38.98, 
+    110000.0, 0.0), ('AXLE', 41.28, 110000.0, 0.0)))
+## C20, 2 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C202_POS', 
+    loadName='C202_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C202_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 110000.0, 0.0), ('AXLE', 2.3, 110000.0, 0.0), (
+    'AXLE', 13.735, 146000.0, 0.0), ('AXLE', 16.035, 146000.0, 0.0), ('AXLE', 
+    25.245, 146000.0, 0.0), ('AXLE', 27.545, 146000.0, 0.0), ('AXLE', 38.98, 
+    110000.0, 0.0), ('AXLE', 41.28, 110000.0, 0.0), ('AXLE', 46.5, 110000.0, 
+    0.0), ('AXLE', 48.8, 110000.0, 0.0), ('AXLE', 60.235, 146000.0, 0.0), (
+    'AXLE', 62.535, 146000.0, 0.0), ('AXLE', 71.745, 146000.0, 0.0), ('AXLE', 
+    74.045, 146000.0, 0.0), ('AXLE', 85.48, 110000.0, 0.0), ('AXLE', 87.78, 
+    110000.0, 0.0)))
+## C20, 3 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C203_POS', 
+    loadName='C203_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C203_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 110000.0, 0.0), ('AXLE', 2.3, 110000.0, 0.0), (
+    'AXLE', 13.735, 146000.0, 0.0), ('AXLE', 16.035, 146000.0, 0.0), ('AXLE', 
+    25.245, 146000.0, 0.0), ('AXLE', 27.545, 146000.0, 0.0), ('AXLE', 38.98, 
+    110000.0, 0.0), ('AXLE', 41.28, 110000.0, 0.0), ('AXLE', 46.5, 110000.0, 
+    0.0), ('AXLE', 48.8, 110000.0, 0.0), ('AXLE', 60.235, 146000.0, 0.0), (
+    'AXLE', 62.535, 146000.0, 0.0), ('AXLE', 71.745, 146000.0, 0.0), ('AXLE', 
+    74.045, 146000.0, 0.0), ('AXLE', 85.48, 110000.0, 0.0), ('AXLE', 87.78, 
+    110000.0, 0.0), ('AXLE', 93.0, 110000.0, 0.0), ('AXLE', 95.3, 110000.0, 
+    0.0), ('AXLE', 106.735, 146000.0, 0.0), ('AXLE', 109.035, 146000.0, 0.0), (
+    'AXLE', 118.245, 146000.0, 0.0), ('AXLE', 120.545, 146000.0, 0.0), ('AXLE', 
+    131.98, 110000.0, 0.0), ('AXLE', 134.28, 110000.0, 0.0)))
+## C30, 1 wagon
+mdb.customData.designCodes.models['Model-1'].Load(name='C301_POS', 
+    loadName='C301_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C301_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 101000.0, 0.0), ('AXLE', 2.25, 101000.0, 0.0), (
+    'AXLE', 11.0, 104000.0, 0.0), ('AXLE', 13.25, 104000.0, 0.0), ('AXLE', 
+    16.86, 100000.0, 0.0), ('AXLE', 19.11, 100000.0, 0.0), ('AXLE', 27.86, 
+    100000.0, 0.0), ('AXLE', 30.11, 100000.0, 0.0), ('AXLE', 33.72, 100000.0, 
+    0.0), ('AXLE', 35.97, 100000.0, 0.0), ('AXLE', 44.72, 100000.0, 0.0), (
+    'AXLE', 46.97, 100000.0, 0.0), ('AXLE', 50.58, 104000.0, 0.0), ('AXLE', 
+    52.83, 104000.0, 0.0), ('AXLE', 61.58, 101000.0, 0.0), ('AXLE', 63.83, 
+    101000.0, 0.0)))
+## C30, 2 wagons
+mdb.customData.designCodes.models['Model-1'].Load(name='C302_POS', 
+    loadName='C302_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='C302_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 101000.0, 0.0), ('AXLE', 2.25, 101000.0, 0.0), (
+    'AXLE', 11.0, 104000.0, 0.0), ('AXLE', 13.25, 104000.0, 0.0), ('AXLE', 
+    16.86, 100000.0, 0.0), ('AXLE', 19.11, 100000.0, 0.0), ('AXLE', 27.86, 
+    100000.0, 0.0), ('AXLE', 30.11, 100000.0, 0.0), ('AXLE', 33.72, 100000.0, 
+    0.0), ('AXLE', 35.97, 100000.0, 0.0), ('AXLE', 44.72, 100000.0, 0.0), (
+    'AXLE', 46.97, 100000.0, 0.0), ('AXLE', 50.58, 104000.0, 0.0), ('AXLE', 
+    52.83, 104000.0, 0.0), ('AXLE', 61.58, 101000.0, 0.0), ('AXLE', 63.83, 
+    101000.0, 0.0), ('AXLE', 70.0, 101000.0, 0.0), ('AXLE', 72.25, 101000.0, 
+    0.0), ('AXLE', 81.0, 104000.0, 0.0), ('AXLE', 83.25, 104000.0, 0.0), (
+    'AXLE', 86.86, 100000.0, 0.0), ('AXLE', 89.11, 100000.0, 0.0), ('AXLE', 
+    97.86, 100000.0, 0.0), ('AXLE', 100.11, 100000.0, 0.0), ('AXLE', 103.72, 
+    100000.0, 0.0), ('AXLE', 105.97, 100000.0, 0.0), ('AXLE', 114.72, 100000.0, 
+    0.0), ('AXLE', 116.97, 100000.0, 0.0), ('AXLE', 120.58, 104000.0, 0.0), (
+    'AXLE', 122.83, 104000.0, 0.0), ('AXLE', 131.58, 101000.0, 0.0), ('AXLE', 
+    133.83, 101000.0, 0.0)))
+#
+### Arbeits tåg K1 K2 and K3 work train 
+## MAINK1_POS
+mdb.customData.designCodes.models['Model-1'].Load(name='K1_POS', 
+    loadName='K1_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K1_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 80000.0, 0.0), ('AXLE', 2.3, 80000.0, 0.0), (
+    'AXLE', 6.1, 100000.0, 0.0), ('AXLE', 8.2, 100000.0, 0.0), ('AXLE', 11.6, 
+    100000.0, 0.0), ('AXLE', 13.7, 100000.0, 0.0), ('AXLE', 17.5, 80000.0, 
+    0.0), ('AXLE', 19.8, 80000.0, 0.0), ('AXLE', 22.8, 80000.0, 0.0), ('AXLE', 
+    25.1, 80000.0, 0.0), ('AXLE', 28.9, 100000.0, 0.0), ('AXLE', 31.0, 
+    100000.0, 0.0), ('AXLE', 34.4, 100000.0, 0.0), ('AXLE', 36.5, 100000.0, 
+    0.0), ('AXLE', 40.3, 80000.0, 0.0), ('AXLE', 42.6, 80000.0, 0.0)))
+#
+mdb.customData.designCodes.models['Model-1'].Load(name='K2A_POS', 
+    loadName='K2A_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K2A_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 100000.0, 0.0), ('AXLE', 2.1, 100000.0, 0.0), (
+    'AXLE', 5.5, 100000.0, 0.0), ('AXLE', 7.6, 100000.0, 0.0), ('AXLE', 11.8, 
+    80000.0, 0.0), ('AXLE', 14.16, 140000.0, 0.0)))
+#
+mdb.customData.designCodes.models['Model-1'].Load(name='K2B_POS', 
+    loadName='K2B_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K2B_POS', vehicleLoadType='FIXED_VEHICLE', 
+    laneWidth=3.3, axleWidth=1.435, surfaceLoadWidth=2.25, 
+    numberOfActiveLanes=2, laneMagnitudeFactor1a=1, laneMagnitudeFactor1b=1, 
+    laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, laneMagnitudeFactor3a=0, 
+    laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, laneMagnitudeFactor4b=1, 
+    laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, laneMagnitudeFactor6a=0, 
+    laneMagnitudeFactor6b=1, additionalLaneSurfaceLoadWidth=0, 
+    additionalLaneSurfaceLoadIntensity=0, dynamicFactorAxleLoads=1, 
+    dynamicFactorSurfaceLoads=1, dynamicFactorAdditionalLaneSurfaceLoad=1, 
+    tableData=(('AXLE', 0.0, 100000.0, 0.0), ('AXLE', 2.1, 100000.0, 0.0), (
+    'AXLE', 5.5, 100000.0, 0.0), ('AXLE', 7.6, 100000.0, 0.0), ('AXLE', 11.8, 
+    140000.0, 0.0), ('AXLE', 14.16, 80000.0, 0.0)))
+#
+mdb.customData.designCodes.models['Model-1'].Load(name='K3W1_POS', 
+    loadName='K3W1_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K3W1_POS', 
+    vehicleLoadType='FIXED_VEHICLE', laneWidth=3.3, axleWidth=1.435, 
+    surfaceLoadWidth=2.25, numberOfActiveLanes=1, laneMagnitudeFactor1a=1, 
+    laneMagnitudeFactor1b=1, laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, 
+    laneMagnitudeFactor3a=0, laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, 
+    laneMagnitudeFactor4b=1, laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, 
+    laneMagnitudeFactor6a=0, laneMagnitudeFactor6b=1, 
+    additionalLaneSurfaceLoadWidth=0, additionalLaneSurfaceLoadIntensity=0, 
+    dynamicFactorAxleLoads=1, dynamicFactorSurfaceLoads=1, 
+    dynamicFactorAdditionalLaneSurfaceLoad=1, tableData=(('AXLE', 0.0, 
+    100000.0, 0.0), ('AXLE', 2.3, 100000.0, 0.0), ('AXLE', 6.5, 100000.0, 0.0), 
+    ('AXLE', 8.8, 100000.0, 0.0), ('AXLE', 11.85, 375000.0, 0.0), ('AXLE', 
+    13.65, 75000.0, 0.0)))
+#
+mdb.customData.designCodes.models['Model-1'].Load(name='K3W2_POS', 
+    loadName='K3W2_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K3W2_POS', 
+    vehicleLoadType='FIXED_VEHICLE', laneWidth=3.3, axleWidth=1.435, 
+    surfaceLoadWidth=2.25, numberOfActiveLanes=1, laneMagnitudeFactor1a=1, 
+    laneMagnitudeFactor1b=1, laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, 
+    laneMagnitudeFactor3a=0, laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, 
+    laneMagnitudeFactor4b=1, laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, 
+    laneMagnitudeFactor6a=0, laneMagnitudeFactor6b=1, 
+    additionalLaneSurfaceLoadWidth=0, additionalLaneSurfaceLoadIntensity=0, 
+    dynamicFactorAxleLoads=1, dynamicFactorSurfaceLoads=1, 
+    dynamicFactorAdditionalLaneSurfaceLoad=1, tableData=(('AXLE', 0.0, 
+    100000.0, 0.0), ('AXLE', 2.3, 100000.0, 0.0), ('AXLE', 6.5, 100000.0, 0.0), 
+    ('AXLE', 8.8, 100000.0, 0.0), ('AXLE', 11.85, 75000.0, 0.0), ('AXLE', 
+    13.65, 375000.0, 0.0)))
+#
+mdb.customData.designCodes.models['Model-1'].Load(name='K3T1_POS', 
+    loadName='K3T1_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K3T1_POS', 
+    vehicleLoadType='FIXED_VEHICLE', laneWidth=3.3, axleWidth=1.435, 
+    surfaceLoadWidth=2.25, numberOfActiveLanes=1, laneMagnitudeFactor1a=1, 
+    laneMagnitudeFactor1b=1, laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, 
+    laneMagnitudeFactor3a=0, laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, 
+    laneMagnitudeFactor4b=1, laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, 
+    laneMagnitudeFactor6a=0, laneMagnitudeFactor6b=1, 
+    additionalLaneSurfaceLoadWidth=0, additionalLaneSurfaceLoadIntensity=0, 
+    dynamicFactorAxleLoads=1, dynamicFactorSurfaceLoads=1, 
+    dynamicFactorAdditionalLaneSurfaceLoad=1, tableData=(('AXLE', 0.0, 
+    100000.0, 0.0), ('AXLE', 2.3, 100000.0, 0.0), ('AXLE', 6.5, 100000.0, 0.0), 
+    ('AXLE', 8.8, 100000.0, 0.0), ('AXLE', 11.85, 90000.0, 0.0), ('AXLE', 
+    13.95, 90000.0, 0.0), ('AXLE', 17.85, 90000.0, 0.0), ('AXLE', 19.95, 
+    90000.0, 0.0), ('AXLE', 22.7, 180000.0, 0.0), ('AXLE', 24.5, 180000.0, 
+    0.0)))
+#
+mdb.customData.designCodes.models['Model-1'].Load(name='K3T2_POS', 
+    loadName='K3T2_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K3T2_POS', 
+    vehicleLoadType='FIXED_VEHICLE', laneWidth=3.3, axleWidth=1.435, 
+    surfaceLoadWidth=2.25, numberOfActiveLanes=1, laneMagnitudeFactor1a=1, 
+    laneMagnitudeFactor1b=1, laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, 
+    laneMagnitudeFactor3a=0, laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, 
+    laneMagnitudeFactor4b=1, laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, 
+    laneMagnitudeFactor6a=0, laneMagnitudeFactor6b=1, 
+    additionalLaneSurfaceLoadWidth=0, additionalLaneSurfaceLoadIntensity=0, 
+    dynamicFactorAxleLoads=1, dynamicFactorSurfaceLoads=1, 
+    dynamicFactorAdditionalLaneSurfaceLoad=1, tableData=(('AXLE', 0.0, 
+    100000.0, 0.0), ('AXLE', 2.3, 100000.0, 0.0), ('AXLE', 6.5, 100000.0, 0.0), 
+    ('AXLE', 8.8, 100000.0, 0.0), ('AXLE', 12.2, 180000.0, 0.0), ('AXLE', 14.0, 
+    180000.0, 0.0), ('AXLE', 16.75, 90000.0, 0.0), ('AXLE', 18.85, 90000.0, 
+    0.0), ('AXLE', 22.75, 90000.0, 0.0), ('AXLE', 24.85, 90000.0, 0.0)))
+#
+mdb.customData.designCodes.models['Model-1'].Load(name='K3T3_POS', 
+    loadName='K3T3_POS', type=STATICVEHICLE)
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='K3T3_POS', 
+    vehicleLoadType='FIXED_VEHICLE', laneWidth=3.3, axleWidth=1.435, 
+    surfaceLoadWidth=2.25, numberOfActiveLanes=1, laneMagnitudeFactor1a=1, 
+    laneMagnitudeFactor1b=1, laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, 
+    laneMagnitudeFactor3a=0, laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, 
+    laneMagnitudeFactor4b=1, laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, 
+    laneMagnitudeFactor6a=0, laneMagnitudeFactor6b=1, 
+    additionalLaneSurfaceLoadWidth=0, additionalLaneSurfaceLoadIntensity=0, 
+    dynamicFactorAxleLoads=1, dynamicFactorSurfaceLoads=1, 
+    dynamicFactorAdditionalLaneSurfaceLoad=1, tableData=(('AXLE', 0.0, 
+    100000.0, 0.0), ('AXLE', 2.3, 100000.0, 0.0), ('AXLE', 6.5, 100000.0, 0.0), 
+    ('AXLE', 8.8, 100000.0, 0.0), ('AXLE', 12.2, 180000.0, 0.0), ('AXLE', 14.0, 
+    180000.0, 0.0)))
+
+
+
+
+### LIVE LOAD MANAGER ###
+
+# CREATING LIVE-LOAD-AREA-2 WITH 2 LANES - TRAFFIC2 CREATED BELOW
+mdb.models['Model-1'].rootAssembly.Surface(name='Traffic2', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    (x1+x7)/2, (y1+y7)/2, 0), )))
+	
+mdb.customData.liveLoads.models['Model-1'].CreateArea(name='Live-Load-Area-2')
+dataManagement.modules.liveLoad.registerFormHandling.LiveLoadArea(
+    modelName='Model-1', definitionName='Live-Load-Area-2', 
+    areaType=SURFACE_TYPE, hostRegionName='Traffic2', loadDirection=NEGATIVE_Z, 
+    referenceCsysName='(Global)', sketchPlane=PLANE_XY, 
+    sketchOffset=POSITIVE_DIRECTION, lanes=())
+#
+
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-2'].createLaneSketch(
+    regionName='Traffic2', sketchName='Live-Load-Area-2', 
+    sketchPlane=PLANE_XY, normalDirection=POSITIVE_DIRECTION)
+# Create sketch
+s = mdb.models['Model-1'].ConstrainedSketch(name='__edit__', 
+    objectToCopy=mdb.models['Model-1'].sketches['Live-Load-Area-2'])
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+session.viewports['Viewport: 1'].view.setValues(session.views['Front'])
+
+######## 
+
+yt1=8
+
+yt2=4
+
+#check the offset in coordinate system
+xv=28.2
+yv=6.235
+'''
+s.Line(point1=(0,0), point2=(10,0))
+s.unsetPrimaryObject()
+'''
+
+s.Line(point1=(x1-xv,yt1-yv), point2=(x5-xv,yt1-yv))
+s.Line(point1=(x1-xv,yt2-yv), point2=(x5-xv,yt2-yv))
+'''
+s.Line(point1=(-22,yt1-0.1), point2=(22,yt1-0.1))
+s.Line(point1=(-22,yt1+0.1), point2=(22,yt1+0.1))
+s.Line(point1=(-22,yt2-0.1), point2=(22,yt2-0.1))
+s.Line(point1=(-22,yt2+0.1), point2=(22,yt2+0.1))
+'''
+s.unsetPrimaryObject()
+mdb.models['Model-1'].sketches.changeKey(fromName='__edit__', 
+    toName='Live-Load-Area-2')
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-2'].addLanes(
+    sketchName='Live-Load-Area-2', sketchPlane='PLANE_XY', 
+    allowMultipleLanes=True)
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-2'].cleanupSketch(
+    sketchName='Live-Load-Area-2')
+
+mdb.models['Model-1'].parts['Live-Load-Area-2-Lane-1'].seedPart(size=1.0)
+mdb.models['Model-1'].parts['Live-Load-Area-2-Lane-1'].generateMesh()
+mdb.models['Model-1'].parts['Live-Load-Area-2-Lane-2'].seedPart(size=1.0)
+mdb.models['Model-1'].parts['Live-Load-Area-2-Lane-2'].generateMesh()
+
+
+a = mdb.models['Model-1'].rootAssembly
+
+a.DatumPointByCoordinate(coords=(x1,yt1+1.3,0)) 
+a.DatumPointByCoordinate(coords=(x1,yt1-1.3,0)) 
+a.DatumPointByCoordinate(coords=(x5,yt1+1.3,0)) 
+a.DatumPointByCoordinate(coords=(x5,yt1-1.3,0)) 	
+
+a.DatumPointByCoordinate(coords=(x1,yt2+1.3,0)) 
+a.DatumPointByCoordinate(coords=(x1,yt2-1.3,0)) 
+a.DatumPointByCoordinate(coords=(x5,yt2+1.3,0)) 
+a.DatumPointByCoordinate(coords=(x5,yt2-1.3,0)) 
+
+
+mdb.models['Model-1'].rootAssembly.PartitionFaceByShortestPath(faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((x1, 
+    yt1, 0), )), point1=mdb.models['Model-1'].rootAssembly.datums[17], 
+    point2=mdb.models['Model-1'].rootAssembly.datums[19])
+
+mdb.models['Model-1'].rootAssembly.PartitionFaceByShortestPath(faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((x1, 
+    yt1, 0), )), point1=mdb.models['Model-1'].rootAssembly.datums[18], 
+    point2=mdb.models['Model-1'].rootAssembly.datums[20])
+
+mdb.models['Model-1'].rootAssembly.PartitionFaceByShortestPath(faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((x1, 
+    yt2, 0), )), point1=mdb.models['Model-1'].rootAssembly.datums[21], 
+    point2=mdb.models['Model-1'].rootAssembly.datums[23])
+	
+mdb.models['Model-1'].rootAssembly.PartitionFaceByShortestPath(faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((x1, 
+    yt2, 0), )), point1=mdb.models['Model-1'].rootAssembly.datums[22], 
+    point2=mdb.models['Model-1'].rootAssembly.datums[24])
+
+
+
+
+
+dataManagement.modules.liveLoad.registerFormHandling.LiveLoadArea(modelName='Model-1', definitionName='Live-Load-Area-2', areaType=SURFACE_TYPE, hostRegionName='Traffic2', loadDirection=NEGATIVE_Z, referenceCsysName='(Global)', sketchPlane=PLANE_XY, sketchOffset=POSITIVE_DIRECTION, lanes=(('Lane-1', '1.0'), ('Lane-2', '1.0')))
+
+
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-2'].active = True
+
+mdb.models['Model-1'].rootAssembly.Surface(name='Traffic3', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    x1, yt1, 0.0), ), ((x1, yt2, 0.0), ), ))
+
+#################################################################### END OF CREATION OF THE LIVE-LOAD-AREA-2
+
+
+# C14 1 wagon - 8 wagons
+#mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-2'].active = False
+
+mdb.customData.designCodes.models['Model-1'].loads['C141_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C141_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C141_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C141_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+mdb.customData.designCodes.models['Model-1'].loads['C142_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C142_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C142_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C142_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C143_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C143_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C143_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C143_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+mdb.customData.designCodes.models['Model-1'].loads['C144_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C144_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C144_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C144_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C145_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C145_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C145_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C145_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C146_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C146_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C146_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C146_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C147_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C147_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C147_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C147_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C148_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C148_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C148_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C148_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+# C20 1 wagon - 3 wagons
+mdb.customData.designCodes.models['Model-1'].loads['C201_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C201_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C201_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C201_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C202_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C202_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C202_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C202_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C203_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C203_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C203_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C203_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+# C30 1 wagon - 2 wagons
+mdb.customData.designCodes.models['Model-1'].loads['C301_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C301_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C301_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C301_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['C302_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['C302_POS'].Area(    'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['C302_POS'].areas['Live-Load-Area-2'].Lane(    '2')
+mdb.customData.designCodes.models['Model-1'].loads['C302_POS'].areas['Live-Load-Area-2'].Lane(    '1')
+
+## K1 K2 and K3
+
+mdb.customData.designCodes.models['Model-1'].loads['K1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K1_POS'].Area( 		'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K1_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K1_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+
+
+mdb.customData.designCodes.models['Model-1'].loads['K2B_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K2B_POS'].Area( 'Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K2B_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K2B_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['K2A_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K2A_POS'].Area('Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K2A_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K2A_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+mdb.customData.designCodes.models['Model-1'].loads['K3W1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K3W1_POS'].Area('Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K3W1_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K3W1_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+
+mdb.customData.designCodes.models['Model-1'].loads['K3W2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K3W2_POS'].Area('Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K3W2_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K3W2_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+mdb.customData.designCodes.models['Model-1'].loads['K3T1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K3T1_POS'].Area('Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K3T1_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K3T1_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+mdb.customData.designCodes.models['Model-1'].loads['K3T2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K3T2_POS'].Area('Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K3T2_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K3T2_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+mdb.customData.designCodes.models['Model-1'].loads['K3T3_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['K3T3_POS'].Area('Live-Load-Area-2')
+mdb.customData.designCodes.models['Model-1'].loads['K3T3_POS'].areas['Live-Load-Area-2'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['K3T3_POS'].areas['Live-Load-Area-2'].Lane('1')
+
+
+###########################################
+
+
+##--------- LATERAL FORCE ----------------#
+
+mdb.models['Model-1'].SurfaceTraction(createStepName='LateralCase1', 
+    directionVector=((0.0, 0.0, 0.0), (1.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=100.0, name='LateralCase1', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Traffic3'], traction=GENERAL)
+
+mdb.models['Model-1'].SurfaceTraction(createStepName='LateralCase2', 
+    directionVector=((0.0, 0.0, 0.0), (-1.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=100.0, name='LateralCase2', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Traffic3'], traction=GENERAL)
+	
+	
+##--------- CENTRIFUGAL FORCE ----------------#
+mdb.models['Model-1'].SurfaceTraction(createStepName='CentrifugalCase1', 
+    directionVector=((0.0, 0.0, 0.0), (0.0, 1.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=1.0, name='CentrifugalCase1', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Traffic3'], traction=GENERAL)	
+	
+mdb.models['Model-1'].SurfaceTraction(createStepName='CentrifugalCase2', 
+    directionVector=((0.0, 0.0, 0.0), (0.0, -1.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=1.0, name='CentrifugalCase2', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Traffic3'], traction=GENERAL)		
+
+##--------- BRAKING FORCE ----------------#
+mdb.models['Model-1'].SurfaceTraction(createStepName='Braking_Train_1', 
+    directionVector=((0.0, 0.0, 0.0), (1.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=10.0, name='Braking_Train_1', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Traffic3'], traction=GENERAL)
+	
+mdb.models['Model-1'].SurfaceTraction(createStepName='Braking_Train_2', 
+    directionVector=((0.0, 0.0, 0.0), (-1.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=10.0, name='Braking_Train_2', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Traffic3'], traction=GENERAL)
+
+# #----BALLAST----#
+mdb.models['Model-1'].Pressure(createStepName='Ballast', distributionType=
+    UNIFORM, field='', magnitude=-14000.0, name='Ballast', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Traffic2'])	
+
+
+	
+	
+################################ EARTH PRESSURE #####################
+#SOUTH WALL - EARTH PRESSURE HIGH WATER
+# PUT EARTH PRESSURE VALUES BELOW 
+EPTOP1=10000
+EPTOP2=10000
+EPBOT1=30000
+EPBOT2=30000
+
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureHW_S', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x7, y7, 0.0, EPBOT1), 
+	(x7, y7, hhh, EPTOP1), 
+	(x6, y6, 0.0, EPBOT2), 
+	(x6, y6, hhh, EPTOP2)))
+	
+mdb.models['Model-1'].rootAssembly.Surface(name='Wall_S', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt((((x6+x7)/2, 
+    (y6+y7)/2, hhh/2), )))
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureHIGHWater', 
+    distributionType=FIELD, field='EarthPressureHW_S', magnitude=1.0, name=
+    'EP_H_S', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_S'])
+
+#NORTH WALLS - EARTH PRESSURE HIGH WATER
+# PUT EARTH PRESSURE VALUES BELOW 
+EPTOP1=10000
+EPTOP2=10000
+EPTOP3=10000
+EPTOP4=10000
+EPTOP5=10000
+EPBOT1=30000
+EPBOT2=30000
+EPBOT3=30000
+EPBOT4=30000
+EPBOT5=30000
+
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureHW_N1', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x1, y1, 0.0, EPBOT1), 
+	(x1, y1, hhh, EPTOP1), 
+	(x2, y2, 0.0, EPBOT2), 
+	(x2, y2, hhh, EPTOP2)))
+	
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureHW_N2', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x2, y2, 0.0, EPBOT2), 
+	(x2, y2, hhh, EPTOP2), 
+	(x3, y3, 0.0, EPBOT3), 
+	(x3, y3, hhh, EPTOP3)))
+
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureHW_N3', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x3, y3, 0.0, EPBOT3), 
+	(x3, y3, hhh, EPTOP3), 
+	(x4, y4, 0.0, EPBOT4), 
+	(x4, y4, hhh, EPTOP4)))	
+
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureHW_N4', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x4, y4, 0.0, EPBOT4), 
+	(x4, y4, hhh, EPTOP4), 
+	(x5, y5, 0.0, EPBOT5), 
+	(x5, y5, hhh, EPTOP5)))	
+	
+mdb.models['Model-1'].rootAssembly.Surface(name='Wall_N1', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt((((x1+x2)/2, 
+    (y1+y2)/2, hhh/2), )))
+
+mdb.models['Model-1'].rootAssembly.Surface(name='Wall_N2', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt((((x2+x3)/2, 
+    (y2+y3)/2, hhh/2), )))	
+	
+mdb.models['Model-1'].rootAssembly.Surface(name='Wall_N3', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt((((x3+x4)/2, 
+    (y3+y4)/2, hhh/2), )))
+
+mdb.models['Model-1'].rootAssembly.Surface(name='Wall_N4', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt((((x4+x5)/2, 
+    (y4+y5)/2, hhh/2), )))		
+	
+	
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureHIGHWater', 
+    distributionType=FIELD, field='EarthPressureHW_N1', magnitude=1.0, name=
+    'EP_H_N1', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N1'])	
+
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureHIGHWater', 
+    distributionType=FIELD, field='EarthPressureHW_N2', magnitude=1.0, name=
+    'EP_H_N2', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N2'])	
+	
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureHIGHWater', 
+    distributionType=FIELD, field='EarthPressureHW_N3', magnitude=1.0, name=
+    'EP_H_N3', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N3'])
+	
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureHIGHWater', 
+    distributionType=FIELD, field='EarthPressureHW_N4', magnitude=1.0, name=
+    'EP_H_N4', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N4'])
+	
+	
+#SOUTH WALL - EARTH PRESSURE LOW WATER
+# PUT EARTH PRESSURE VALUES BELOW 
+EPTOP1=5000
+EPTOP2=5000
+EPBOT1=25000
+EPBOT2=25000
+
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureLW_S', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x7, y7, 0.0, EPBOT1), 
+	(x7, y7, hhh, EPTOP1), 
+	(x6, y6, 0.0, EPBOT2), 
+	(x6, y6, hhh, EPTOP2)))
+	
+
+	
+mdb.models['Model-1'].rootAssembly.Surface(name='Wall_S', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt((((x6+x7)/2, 
+    (y6+y7)/2, hhh/2), )))
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureLOWWater', 
+    distributionType=FIELD, field='EarthPressureLW_S', magnitude=1.0, name=
+    'EP_L_S', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_S'])
+
+
+#NORTH WALLS - EARTH PRESSURE LOW WATER
+# PUT EARTH PRESSURE VALUES BELOW 
+EPTOP1=10000
+EPTOP2=10000
+EPTOP3=10000
+EPTOP4=10000
+EPTOP5=10000
+EPBOT1=30000
+EPBOT2=30000
+EPBOT3=30000
+EPBOT4=30000
+EPBOT5=30000
+
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureLW_N1', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x1, y1, 0.0, EPBOT1), 
+	(x1, y1, hhh, EPTOP1), 
+	(x2, y2, 0.0, EPBOT2), 
+	(x2, y2, hhh, EPTOP2)))
+	
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureLW_N2', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x2, y2, 0.0, EPBOT2), 
+	(x2, y2, hhh, EPTOP2), 
+	(x3, y3, 0.0, EPBOT3), 
+	(x3, y3, hhh, EPTOP3)))
+	
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureLW_N3', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x3, y3, 0.0, EPBOT3), 
+	(x3, y3, hhh, EPTOP3), 
+	(x4, y4, 0.0, EPBOT4), 
+	(x4, y4, hhh, EPTOP4)))	
+
+mdb.models['Model-1'].MappedField(description='', fieldDataType=SCALAR, 
+    localCsys=None, name='EarthPressureLW_N4', partLevelData=False, 
+    pointDataFormat=XYZ, regionType=POINT, xyzPointData=(
+	(x4, y4, 0.0, EPBOT4), 
+	(x4, y4, hhh, EPTOP4), 
+	(x5, y5, 0.0, EPBOT5), 
+	(x5, y5, hhh, EPTOP5)))		
+
+	
+	
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureLOWWater', 
+    distributionType=FIELD, field='EarthPressureLW_N1', magnitude=1.0, name=
+    'EP_L_N1', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N1'])	
+
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureLOWWater', 
+    distributionType=FIELD, field='EarthPressureLW_N2', magnitude=1.0, name=
+    'EP_L_N2', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N2'])	
+
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureLOWWater', 
+    distributionType=FIELD, field='EarthPressureLW_N3', magnitude=1.0, name=
+    'EP_L_N3', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N3'])
+
+mdb.models['Model-1'].Pressure(createStepName='EarthPressureLOWWater', 
+    distributionType=FIELD, field='EarthPressureLW_N4', magnitude=1.0, name=
+    'EP_L_N4', region=mdb.models['Model-1'].rootAssembly.surfaces['Wall_N4'])		
+	
+
+
+# #----ÖVERFYLLNING----#
+
+# First the Surface need to be determinded in the UI, this is called as OF_area
+
+mdb.models['Model-1'].rootAssembly.regenerate()
+mdb.models['Model-1'].rootAssembly.Surface(name='OF_area', side2Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    (x1+x7)/2, (y1+y7)/2, hhh), ), (((x5+x6)/2, (y5+y6)/2, hhh), ), ))
+	
+	
+	
+OF_max = 86000 	# Max value for the load from the rock
+OF_min = 86000		# Min value
+#
+tr1=29.9108339		# The end point of the OF load
+tr2=36.0078338		# The start point of the OF load
+
+# Create the field which descibe the trend of the load - TO BE CHECKED WITH FINAL GEOMETRY#
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Overfyllning')		# show the Overfyllning load
+#
+mdb.models['Model-1'].MappedField(name='Overfyllning-1', description='', 
+    regionType=POINT, partLevelData=False, localCsys=None, pointDataFormat=XYZ, 
+    fieldDataType=SCALAR, xyzPointData=
+	((x1, y1, hhh, OF_max),  
+	(x7, y7, hhh, OF_max), 
+	(x5, y5, hhh, OF_min),
+	(x6, y6, hhh, OF_min),
+	(80, y5, hhh, 0),
+	(80, y6, hhh, 0), ))
+#	
+
+# Assign the Overfyllning load
+mdb.models['Model-1'].Pressure(name='Overfyllning', 
+    createStepName='Overfyllning', region=mdb.models['Model-1'].rootAssembly.surfaces['OF_area'], distributionType=FIELD, 
+    field='Overfyllning-1', magnitude=-1)	
+#	
+
+
+
+	
+######################################################### ACCIDENT LOAD ############ 
+a = mdb.models['Model-1'].rootAssembly
+f1 = a.instances['BP1-1'].faces
+a.DatumPlaneByOffset(plane=f1.findAt(coordinates=(10, 0, 0.0), 
+    normal=(0.0, 0.0, 1.0)), flip=SIDE1, offset=1.8+0.1)		## Change the offset height if it is needed
+#
+a = mdb.models['Model-1'].rootAssembly
+f1 = a.instances['BP1-1'].faces
+a.DatumPlaneByOffset(plane=f1.findAt(coordinates=(10, 0, 0.0), 
+    normal=(0.0, 0.0, 1.0)), flip=SIDE1, offset=1.8-0.1)		## Change the offset height if it is needed
+		
+	
+
+	
+mdb.models['Model-1'].rootAssembly.PartitionFaceByDatumPlane(datumPlane=
+    mdb.models['Model-1'].rootAssembly.datums[38], faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    18.800001, 0.6, 1.94), ), ((55.013335, 11.771667, 1.94), ), ((50.425001, 
+    11.506667, 1.94), ), ((32.496665, 11.37, 1.94), ), ((2.6, 11.421, 1.94), ), 
+    ))
+mdb.models['Model-1'].rootAssembly.PartitionFaceByDatumPlane(datumPlane=
+    mdb.models['Model-1'].rootAssembly.datums[37], faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((2.6, 
+    11.421, 3.073333), ), ((32.496665, 11.37, 3.073333), ), ((50.425001, 
+    11.506667, 3.073333), ), ((18.800001, 0.6, 3.073333), ), ((55.013335, 
+    11.771667, 3.073333), ), ))	
+
+
+	
+mdb.models['Model-1'].rootAssembly.Surface(name='Accident_N', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    53.626668, 11.673333, 1.833333), ), ((48.609999, 11.438333, 1.833333), ), (
+    (18.198333, 11.37, 1.833333), ), ((1.3, 11.472, 1.833333), ), ))	
+	
+mdb.models['Model-1'].rootAssembly.Surface(name='Accident_S', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    37.600001, 0.6, 1.833333), )))
+	
+############ Create the accidental steps - load from train ########################
+
+# Create the steps
+
+LengthTunnel = 56		## Change the length
+LnegthOfTheLoad = 2
+
+v = LengthTunnel/LnegthOfTheLoad
+
+Step_name_S = ['Accident_S_'+str(i) for i in range(v)] 
+
+for i in range(len(Step_name_S)):
+	mdb.models['Model-1'].StaticLinearPerturbationStep(name=Step_name_S[i], 
+	previous='Shrinkage')
+	
+
+
+Step_name_N = ['Accident_N_'+str(i) for i in range(v)] 
+
+for i in range(len(Step_name_N)):
+	mdb.models['Model-1'].StaticLinearPerturbationStep(name=Step_name_N[i], 
+	previous='Shrinkage')
+	
+
+
+	
+
+#Mappepedfield for the load		
+
+
+gep=0.0009
+
+for i in range(len(Step_name_N)):
+	a1 = 0+i*2
+	a2 = 2+i*2
+	mdb.models['Model-1'].MappedField(name=Step_name_N[i], description='', 
+	regionType=POINT, partLevelData=False, localCsys=None, pointDataFormat=XYZ, 
+	fieldDataType=SCALAR, xyzPointData=(
+	(a1-gep-gep,11.37,1.7,0),
+	(a1-gep,11.37,1.7,0),
+	(a1,11.37,1.7,750000),
+	(a2,11.37,1.7,750000),
+	(a2+gep,11.37,1.7,0),
+	(a2+gep+gep,11.37,1.7,0),
+	(a1-gep-gep,11.37,1.9,0),
+	(a1-gep,11.37,1.9,0),
+	(a1,11.37,1.9,750000),
+	(a2,11.37,1.9,750000), 
+	(a2+gep,11.37,1.9,0),
+	(a2+gep+gep,11.37,1.9,0)
+
+	))
+
+
+for i in range(len(Step_name_S)):
+	a1 = 0+i*2
+	a2 = 2+i*2
+	mdb.models['Model-1'].MappedField(name=Step_name_S[i], description='', 
+	regionType=POINT, partLevelData=False, localCsys=None, pointDataFormat=XYZ, 
+	fieldDataType=SCALAR, xyzPointData=(
+	(a1-gep-gep,0.6,1.7,0),
+	(a1-gep,0.6,1.7,0),
+	(a1,0.6,1.7,750000),
+	(a2,0.6,1.7,750000),
+	(a2+gep,1.7,0.6,0),
+	(a2+gep+gep,0.6,1.7,0),
+	(a1-gep-gep,0.6,1.7,0),
+	(a1-gep,0.6,1.9,0),
+	(a1,0.6,1.9,750000),
+	(a2,0.6,1.9,750000),
+	(a2+gep,0.6,1.9,0),
+	(a2+gep+gep,0.6,1.9,0)
+	))	
+	
+
+
+# Apply the loads
+#
+for i in range(len(Step_name_N)):
+	a = mdb.models['Model-1'].rootAssembly
+	region = a.surfaces['Accident_N']
+	mdb.models['Model-1'].Pressure(name=Step_name_N[i], createStepName=Step_name_N[i], 
+		region=region, distributionType=FIELD, field=Step_name_N[i], magnitude=1.0)		
+###
+
+#
+for i in range(len(Step_name_S)):
+	a = mdb.models['Model-1'].rootAssembly
+	region = a.surfaces['Accident_S']
+	mdb.models['Model-1'].Pressure(name=Step_name_S[i], createStepName=Step_name_S[i], 
+		region=region, distributionType=FIELD, field=Step_name_S[i], magnitude=1.0)		
+###
+	
+###############################################################################################	
+
+## Transport
+
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    step='Service_transport')
+#
+
+mdb.customData.designCodes.models['Model-1'].Load(name='Service_transport', loadName='Service_transport', type=STATICVEHICLE)
+
+dataManagement.modules.liveLoad.registerFormHandling.VehicleLoad(
+    modelName='Model-1', loadId='Service_transport', 
+    vehicleLoadType='FIXED_VEHICLE', laneWidth=3, axleWidth=2, 
+    surfaceLoadWidth=0, numberOfActiveLanes=1, laneMagnitudeFactor1a=1, 
+    laneMagnitudeFactor1b=1, laneMagnitudeFactor2a=0, laneMagnitudeFactor2b=1, 
+    laneMagnitudeFactor3a=0, laneMagnitudeFactor3b=1, laneMagnitudeFactor4a=0, 
+    laneMagnitudeFactor4b=1, laneMagnitudeFactor5a=0, laneMagnitudeFactor5b=1, 
+    laneMagnitudeFactor6a=0, laneMagnitudeFactor6b=1, 
+    additionalLaneSurfaceLoadWidth=0, additionalLaneSurfaceLoadIntensity=0, 
+    dynamicFactorAxleLoads=1, dynamicFactorSurfaceLoads=1, 
+    dynamicFactorAdditionalLaneSurfaceLoad=1, tableData=(('AXLE', 0.0, 
+    267000.0, 0.0), ('AXLE', 1.5, 267000.0, 0.0), ('AXLE', 3.0, 267000.0, 0.0), (
+    'AXLE', 4.5, 267000.0, 0.0), ('AXLE', 6.0, 267000.0, 0.0), ('AXLE', 7.5, 
+    267000.0, 0.0), ('AXLE', 9.0, 267000.0, 0.0), ('AXLE', 10.5, 267000.0, 0.0), (
+    'AXLE', 12.0, 267000.0, 0.0), ('AXLE', 13.5, 267000.0, 0.0), ('AXLE', 15.0, 
+    267000.0, 0.0), ('AXLE', 29.9, 267000.0, 0.0), ('AXLE', 31.4, 267000.0, 0.0), 
+    ('AXLE', 32.9, 267000.0, 0.0), ('AXLE', 34.4, 267000.0, 0.0), ('AXLE', 35.9, 
+    267000.0, 0.0), ('AXLE', 37.4, 267000.0, 0.0), ('AXLE', 38.9, 267000.0, 0.0), 
+    ('AXLE', 40.4, 267000.0, 0.0), ('AXLE', 41.9, 267000.0, 0.0), ('AXLE', 43.4, 
+    267000.0, 0.0), ('AXLE', 44.9, 267000.0, 0.0)))
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SERVICE_POS', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'Service_transport1', DESIGN_LOAD, 'Service_transport', 'Live-Load-Area-5', 
+    1, 0, 0, 0, 1, 1), ), addZeroLoad=True, associatedComponents=('S11', 'S12', 
+    'S13', 'S22', 'S23', 'S33', 'SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 
+    'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='GR3F', summationMethod=PICK_MOST_ADVERSE, 
+    includeAllDesignLoads=True, numberOfDesignLoads=1, 
+    numberOfLoadCoefficients=1, loads=(('PEDEST_POS', LOADGROUP, 'PEDEST_POS', 
+    '', 0.4, 0, 0, 0, 1, 1), ('Service_transport1', DESIGN_LOAD, 
+    'Service_transport', 'Live-Load-Area-5', 0.4, 0, 0, 0, 1, 1)), 
+    addZeroLoad=True, associatedComponents=())
+#
+
+#######ADDING LIVE LOAD AREA FOR SERVICE TRANSPORT
+
+mdb.models['Model-1'].rootAssembly.Surface(name='TopPlate', side1Faces=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((1.3, 
+    7.831, 5.82), )))
+
+
+mdb.customData.liveLoads.models['Model-1'].CreateArea(name='Live-Load-Area-3')
+
+
+mdb.customData.liveLoads.models['Model-1'].CreateArea(name='Live-Load-Area-3')
+dataManagement.modules.liveLoad.registerFormHandling.LiveLoadArea(
+    modelName='Model-1', definitionName='Live-Load-Area-3', 
+    areaType=SURFACE_TYPE, hostRegionName='TopPlate', loadDirection=NEGATIVE_Z, 
+    referenceCsysName='(Global)', sketchPlane=PLANE_XY, 
+    sketchOffset=POSITIVE_DIRECTION, lanes=())
+#
+
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-3'].createLaneSketch(
+    regionName='TopPlate', sketchName='Live-Load-Area-3', 
+    sketchPlane=PLANE_XY, normalDirection=POSITIVE_DIRECTION)
+# Create sketch
+s = mdb.models['Model-1'].ConstrainedSketch(name='__edit__', 
+    objectToCopy=mdb.models['Model-1'].sketches['Live-Load-Area-3'])
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+session.viewports['Viewport: 1'].view.setValues(session.views['Front'])
+
+######## 
+
+#wanted coordinates
+yt1=5.385
+
+yt2=4
+
+#check the offset in coordinate system
+xv=28.2
+yv=6.235
+
+
+s.Line(point1=(x1-xv,yt1-yv), point2=(x5-xv,yt1-yv))
+s.Line(point1=(10-xv,0-yv), point2=(10-xv,12-yv))
+s.Line(point1=(25-xv,0-yv), point2=(25-xv,12-yv))
+s.Line(point1=(40-xv,0-yv), point2=(40-xv,12-yv))
+
+s.unsetPrimaryObject()
+mdb.models['Model-1'].sketches.changeKey(fromName='__edit__', 
+    toName='Live-Load-Area-3')
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-3'].addLanes(
+    sketchName='Live-Load-Area-3', sketchPlane='PLANE_XY', 
+    allowMultipleLanes=True)
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-3'].cleanupSketch(
+    sketchName='Live-Load-Area-3')
+
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-1'].seedPart(size=1.0)
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-1'].generateMesh()
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-2'].seedPart(size=1.0)
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-2'].generateMesh()
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-3'].seedPart(size=1.0)
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-3'].generateMesh()
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-4'].seedPart(size=1.0)
+mdb.models['Model-1'].parts['Live-Load-Area-3-Lane-4'].generateMesh()
+
+
+
+
+
+
+mdb.customData.liveLoads.models['Model-1'].areas['Live-Load-Area-3'].active = True
+
+
+
+mdb.customData.designCodes.models['Model-1'].loads['Service_transport'].active = True
+mdb.customData.designCodes.models['Model-1'].loads['Service_transport'].Area('Live-Load-Area-3')
+mdb.customData.designCodes.models['Model-1'].loads['Service_transport'].areas['Live-Load-Area-3'].Lane('1')
+mdb.customData.designCodes.models['Model-1'].loads['Service_transport'].areas['Live-Load-Area-3'].Lane('2')
+mdb.customData.designCodes.models['Model-1'].loads['Service_transport'].areas['Live-Load-Area-3'].Lane('3')
+mdb.customData.designCodes.models['Model-1'].loads['Service_transport'].areas['Live-Load-Area-3'].Lane('4')
+
+
+
+###################################################################################################
+	
+### LOAD GROUP MANAGER
+
+## SLC30_POS_RAILROAD
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='C30_POS_RAILROAD', loadGroupName='C30_POS_RAILROAD', 
+    type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='C30_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	('C301_POS', DESIGN_LOAD, 'C301_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C302_POS', DESIGN_LOAD, 'C302_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1)), 
+	addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 
+    'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+
+#	
+mdb.customData.designCodes.models['Model-1'].loadGroups['C30_POS_RAILROAD'].active = True
+
+## C14_POS_RAILROAD
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='C14_POS_RAILROAD', loadGroupName='C14_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='C14_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	('C141_POS', DESIGN_LOAD, 'C141_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C142_POS', DESIGN_LOAD, 'C142_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C143_POS', DESIGN_LOAD, 'C143_POS', ALL_LIVE_LOAD_AREAS, 1,  0, 0, 0, 1, 1), 
+	('C144_POS', DESIGN_LOAD, 'C144_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C145_POS', DESIGN_LOAD, 'C145_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C146_POS', DESIGN_LOAD, 'C146_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C147_POS', DESIGN_LOAD, 'C147_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C148_POS', DESIGN_LOAD, 'C148_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1)), 
+	addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 
+    'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['C14_POS_RAILROAD'].active = True
+
+## SLC20_POS_RAILROAD
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='C20_POS_RAILROAD', loadGroupName='C20_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='C20_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	('C201_POS', DESIGN_LOAD, 'C201_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C202_POS', DESIGN_LOAD, 'C202_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	('C203_POS', DESIGN_LOAD, 'C203_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1)), 
+	addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 
+    'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['C20_POS_RAILROAD'].active = True
+
+
+## SLTRAIN_POS_RAILROAD
+
+# The train loads which are not applied ex. "Saltsjönannan" are commented here
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='TRAIN_POS_RAILROAD', loadGroupName='TRAIN_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='TRAIN_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	#('SLTRAM32_POS_RAILROAD', LOADGROUP, 'SLTRAM32_POS_RAILROAD', '',   1, 0, 0, 0, 1, 1), 
+	#('SLTRAM35_POS_RAILROAD', LOADGROUP, 'SLTRAM35_POS_RAILROAD', '',   1, 0, 0, 0, 1, 1), 
+	#('SLTRAM36_POS_RAILROAD', LOADGROUP, 'SLTRAM36_POS_RAILROAD', '',   1, 0, 0, 0, 1, 1), 
+	('C30_POS_RAILROAD',    LOADGROUP, 'C30_POS_RAILROAD', '',      1, 0, 0, 0, 1, 1), 
+	#('SLSALTC10_POS_RAILROAD', LOADGROUP, 'SLSALTC10_POS_RAILROAD', '', 1, 0, 0,  0, 1, 1), 
+	('C14_POS_RAILROAD', LOADGROUP, 'C14_POS_RAILROAD', '',         1, 0,  0, 0, 1, 1), 
+	('C20_POS_RAILROAD', LOADGROUP, 'C20_POS_RAILROAD', '',         1, 0, 0, 0, 1, 1), 
+	#('SLROSX10_POS_RAILROAD', LOADGROUP, 'SLROSX10_POS_RAILROAD', '',   1, 0, 0, 0, 1, 1), 
+	#('SLROSX60_POS_RAILROAD',  LOADGROUP, 'SLROSX60_POS_RAILROAD', '',  1, 0, 0, 0, 1, 1)
+	), 
+    addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 
+    'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRAIN_POS_RAILROAD'].active = True
+
+### ARBEITSTÅG WORK TRAIN K1 K2 and K3
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='K1_POS_RAILROAD', loadGroupName='K1_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='K1_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('K1_POS', 
+    DESIGN_LOAD, 'K1_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), ), 
+    addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 
+    'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['K1_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='K2_POS_RAILROAD', loadGroupName='K2_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='K2_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('K2A_POS', 
+    DESIGN_LOAD, 'K2A_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), (
+    'K2B_POS', DESIGN_LOAD, 'K2B_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 
+    1, 1)), addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 
+    'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['K2_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='K3_POS_RAILROAD', loadGroupName='K3_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='K3_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('K3W1_POS', 
+    DESIGN_LOAD, 'K3W1_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), (
+    'K3W2_POS', DESIGN_LOAD, 'K3W2_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 
+    0, 1, 1), ('K3T1_POS', DESIGN_LOAD, 'K3T1_POS', 
+    ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), ('K3T2_POS', DESIGN_LOAD, 
+    'K3T2_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), ('K3T3_POS', 
+    DESIGN_LOAD, 'K3T3_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1)), 
+    addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 
+    'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['K3_POS_RAILROAD'].active = True
+
+
+## Maintain enveleop
+## The one which is commented are not used now, ex. Nockeybanan....
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='MAINT_POS_RAILROAD', loadGroupName='MAINT_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='MAINT_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	#('ROSM7A_POS',  DESIGN_LOAD, 'ROSM7A_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	#('ROSM7B_POS', DESIGN_LOAD, 'ROSM7B_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	#('ROSM7C_POS', DESIGN_LOAD, 'ROSM7C_POS', ALL_LIVE_LOAD_AREAS, 1, 0,  0, 0, 1, 1),
+	('K1_POS_RAILROAD', LOADGROUP, 'K1_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1), 
+	('K2_POS_RAILROAD', LOADGROUP,  'K2_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1), 
+	('K3_POS_RAILROAD',  LOADGROUP, 'K3_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1), 
+	#('MAI_POS',  DESIGN_LOAD, 'MAI_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0, 1, 1), 
+	#( 'TRAMMAG_POS', DESIGN_LOAD, 'TRAMMAG_POS', ALL_LIVE_LOAD_AREAS, 1, 0, 0, 0,  1, 1),
+	#('SLTRAMM1_POS_RAILROAD', LOADGROUP, 'SLTRAMM1_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1)
+	),
+	addZeroLoad=True, 
+	associatedComponents=('SF1', 'SF2', 
+    'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 
+    'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['MAINT_POS_RAILROAD'].active = True
+
+
+
+### CENTRIFUGAL_FORCE
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='CENTRIFUGAL_FORCE_ENVELOPE', loadGroupName='CENTRIFUGAL_FORCE_ENVELOPE', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='CENTRIFUGAL_FORCE_ENVELOPE', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	('CentrifugalCase1', DESIGN_LOAD, 'CentrifugalCase1', SUM_LAST_FRAME, 1,  0, 0, 0, 1, 1), ), 
+	addZeroLoad=True,
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['CENTRIFUGAL_FORCE_ENVELOPE'].active = True
+
+
+
+
+## LATERAL_FORCE_ENVELOPE
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='LATERAL_FORCE_ENVELOPE', loadGroupName='LATERAL_FORCE_ENVELOPE', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='LATERAL_FORCE_ENVELOPE', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	('Lateral1', DESIGN_LOAD, 'LateralCase1', SUM_LAST_FRAME, 1, 0, 0, 0, -1, -1), 
+	('LateralCase1', DESIGN_LOAD, 'LateralCase1', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1)), 
+	addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['LATERAL_FORCE_ENVELOPE'].active = True
+
+## BRAKING_FORCE_ENVELOPE
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='BRAKING_FORCE_ENVELOPE', loadGroupName='BRAKING_FORCE_ENVELOPE', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='BRAKING_FORCE_ENVELOPE', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, 
+	loads=(
+	('Braking1', DESIGN_LOAD, 'Braking_Train_1', SUM_LAST_FRAME, 1, 0, 0, 0, -1, -1), 
+	('Braking_Train_1', DESIGN_LOAD, 'Braking_Train_1', SUM_LAST_FRAME,  1, 0, 0, 0, 1, 1)), 
+	addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['BRAKING_FORCE_ENVELOPE'].active = True
+
+
+## Load Groups 11- 22
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='SLGR11_POS_RAILROAD', loadGroupName='SLGR11_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SLGR11_POS_RAILROAD', 
+    summationMethod=CONDITIONAL, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'BRAKING_FORCE_ENVELOPE', LOADGROUP, 'BRAKING_FORCE_ENVELOPE', 
+    '', 1, 1, 1, 1, 1, 1), ('CENTRIFUGAL_FORCE_ENVELOPE', LOADGROUP, 
+    'CENTRIFUGAL_FORCE_ENVELOPE', '', 0.5, 0.5, 0.5, 0.5, 1, 1), (
+    'LATERAL_FORCE_ENVELOPE', LOADGROUP, 'LATERAL_FORCE_ENVELOPE', 
+    '', 0.5, 0.5, 0.5, 0.5, 1, 1), ('TRAIN_POS_RAILROAD', LOADGROUP, 
+    'TRAIN_POS_RAILROAD', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+
+mdb.customData.designCodes.models['Model-1'].loadGroups['SLGR11_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='SLGR12_POS_RAILROAD', loadGroupName='SLGR12_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SLGR12_POS_RAILROAD', 
+    summationMethod=CONDITIONAL, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'BRAKING_FORCE_ENVELOPE', LOADGROUP, 'BRAKING_FORCE_ENVELOPE', 
+    '', 0.5, 0.5, 0.5, 0.5, 1, 1), ('CENTRIFUGAL_FORCE_ENVELOPE', LOADGROUP, 
+    'CENTRIFUGAL_FORCE_ENVELOPE', '', 1, 1, 1, 1, 1, 1), (
+    'LATERAL_FORCE_ENVELOPE', LOADGROUP, 'LATERAL_FORCE_ENVELOPE', 
+    '', 1, 1, 1, 1, 1, 1), ('SLTRAIN_POS_RAILROAD', LOADGROUP, 
+    'TRAIN_POS_RAILROAD', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['SLGR12_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='SLGR13_POS_RAILROAD', loadGroupName='SLGR13_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SLGR13_POS_RAILROAD', 
+    summationMethod=CONDITIONAL, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'BRAKING_FORCE_ENVELOPE', LOADGROUP, 'BRAKING_FORCE_ENVELOPE', 
+    '', 1, 1, 1, 1, 1, 1), ('CENTRIFUGAL_FORCE_ENVELOPE', LOADGROUP, 
+    'CENTRIFUGAL_FORCE_ENVELOPE', '', 0.5, 0.5, 0.5, 0.5, 1, 1), (
+    'LATERAL_FORCE_ENVELOPE', LOADGROUP, 'LATERAL_FORCE_ENVELOPE', 
+    '', 0.5, 0.5, 0.5, 0.5, 1, 1), ('TRAIN_POS_RAILROAD', LOADGROUP, 
+    'TRAIN_POS_RAILROAD', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['SLGR13_POS_RAILROAD'].active = True
+
+
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='SLGR14_POS_RAILROAD', loadGroupName='SLGR14_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SLGR14_POS_RAILROAD', 
+    summationMethod=CONDITIONAL, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'BRAKING_FORCE_ENVELOPE', LOADGROUP, 'BRAKING_FORCE_ENVELOPE', 
+    '', 0.5, 0.5, 0.5, 0.5, 1, 1), ('CENTRIFUGAL_FORCE_ENVELOPE', LOADGROUP, 
+    'CENTRIFUGAL_FORCE_ENVELOPE', '', 1, 1, 1, 1, 1, 1), (
+    'LATERAL_FORCE_ENVELOPE', LOADGROUP, 'LATERAL_FORCE_ENVELOPE', 
+    '', 1, 1, 1, 1, 1, 1), ('TRAIN_POS_RAILROAD', LOADGROUP, 
+    'TRAIN_POS_RAILROAD', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['SLGR14_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='SLGR15_POS_RAILROAD', loadGroupName='SLGR15_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SLGR15_POS_RAILROAD', 
+    summationMethod=CONDITIONAL, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'BRAKING_FORCE_ENVELOPE', LOADGROUP, 'BRAKING_FORCE_ENVELOPE', 
+    '', 0.5, 0.5, 0.5, 0.5, 1, 1), ('CENTRIFUGAL_FORCE_ENVELOPE', LOADGROUP, 
+    'CENTRIFUGAL_FORCE_ENVELOPE', '', 1, 1, 1, 1, 1, 1), (
+    'LATERAL_FORCE_ENVELOPE', LOADGROUP, 'LATERAL_FORCE_ENVELOPE', 
+    '', 1, 1, 1, 1, 1, 1), ('TRAIN_POS_RAILROAD', LOADGROUP, 
+    'TRAIN_POS_RAILROAD', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['SLGR15_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='SLGR21_POS_RAILROAD', loadGroupName='SLGR21_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SLGR21_POS_RAILROAD', 
+    summationMethod=CONDITIONAL, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'GROUP_BRAKING_FORCE_ENVELOPE', LOADGROUP, 'BRAKING_FORCE_ENVELOPE', 
+    '', 1, 1, 1, 1, 1, 1), ('CENTRIFUGAL_FORCE_ENVELOPE', LOADGROUP, 
+    'CENTRIFUGAL_FORCE_ENVELOPE', '', 0.5, 0.5, 0.5, 0.5, 1, 1), (
+    'LATERAL_FORCE_ENVELOPE', LOADGROUP, 'LATERAL_FORCE_ENVELOPE', 
+    '', 0.5, 0.5, 0.5, 0.5, 1, 1), ('TRAIN_POS_RAILROAD', LOADGROUP, 
+    'TRAIN_POS_RAILROAD', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['SLGR21_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='SLGR22_POS_RAILROAD', loadGroupName='SLGR22_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='SLGR22_POS_RAILROAD', 
+    summationMethod=CONDITIONAL, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'BRAKING_FORCE_ENVELOPE', LOADGROUP, 'BRAKING_FORCE_ENVELOPE', 
+    '', 0.5, 0.5, 0.5, 0.5, 1, 1), ('CENTRIFUGAL_FORCE_ENVELOPE', LOADGROUP, 
+    'CENTRIFUGAL_FORCE_ENVELOPE', '', 1, 1, 1, 1, 1, 1), (
+    'LATERAL_FORCE_ENVELOPE', LOADGROUP, 'LATERAL_FORCE_ENVELOPE', 
+    '', 1, 1, 1, 1, 1, 1), ('TRAIN_POS_RAILROAD', LOADGROUP, 
+    'TRAIN_POS_RAILROAD', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, 
+    associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 
+    'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['SLGR22_POS_RAILROAD'].active = True
+##	
+
+
+
+### Multi train load charcteristic, cominamtion, frequent, kavsi...
+
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='CARTML_POS_RAILROAD', loadGroupName='CARTML_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='CARTML_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'SLGR11_POS_RAILROAD', LOADGROUP, 'SLGR11_POS_RAILROAD', '', 1, 0, 0, 0, 1, 
+    1), ('SLGR12_POS_RAILROAD', LOADGROUP, 'SLGR12_POS_RAILROAD', '', 1, 0, 0, 
+    0, 1, 1), ('SLGR13_POS_RAILROAD', LOADGROUP, 'SLGR13_POS_RAILROAD', '', 1, 
+    0, 0, 0, 1, 1), ('SLGR14_POS_RAILROAD', LOADGROUP, 'SLGR14_POS_RAILROAD', 
+    '', 1, 0, 0, 0, 1, 1), ('SLGR15_POS_RAILROAD', LOADGROUP, 
+    'SLGR15_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1), ('SLGR21_POS_RAILROAD', 
+    LOADGROUP, 'SLGR21_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1), (
+    'SLGR22_POS_RAILROAD', LOADGROUP, 'SLGR22_POS_RAILROAD', '', 1, 0, 0, 0, 1, 
+    1), ('MAINT_POS_RAILROAD', LOADGROUP, 'MAINT_POS_RAILROAD', '', 1, 0, 
+    0, 0, 1, 1)), addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 
+    'SF4', 'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['CARTML_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='COMTML_POS_RAILROAD', loadGroupName='COMTML_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='COMTML_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'SLGR11_POS_RAILROAD', LOADGROUP, 'SLGR11_POS_RAILROAD', '', 0.8, 0, 0, 0, 
+    1, 1), ('SLGR12_POS_RAILROAD', LOADGROUP, 'SLGR12_POS_RAILROAD', '', 0.8, 
+    0, 0, 0, 1, 1), ('SLGR13_POS_RAILROAD', LOADGROUP, 'SLGR13_POS_RAILROAD', 
+    '', 0.8, 0, 0, 0, 1, 1), ('SLGR14_POS_RAILROAD', LOADGROUP, 
+    'SLGR14_POS_RAILROAD', '', 0.8, 0, 0, 0, 1, 1), ('SLGR15_POS_RAILROAD', 
+    LOADGROUP, 'SLGR15_POS_RAILROAD', '', 0.8, 0, 0, 0, 1, 1), (
+    'SLGR21_POS_RAILROAD', LOADGROUP, 'SLGR21_POS_RAILROAD', '', 0.8, 0, 0, 0, 
+    1, 1), ('SLGR22_POS_RAILROAD', LOADGROUP, 'SLGR22_POS_RAILROAD', '', 0.8, 
+    0, 0, 0, 1, 1), ('MAINT_POS_RAILROAD', LOADGROUP, 'MAINT_POS_RAILROAD', 
+    '', 0.8, 0, 0, 0, 1, 1)), addZeroLoad=True, associatedComponents=('SF1', 
+    'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 
+    'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['COMTML_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='FRETML_POS_RAILROAD', loadGroupName='FRETML_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='FRETML_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'SLGR11_POS_RAILROAD', LOADGROUP, 'SLGR11_POS_RAILROAD', '', 0.8, 0, 0, 0, 
+    1, 1), ('SLGR12_POS_RAILROAD', LOADGROUP, 'SLGR12_POS_RAILROAD', '', 0.8, 
+    0, 0, 0, 1, 1), ('SLGR13_POS_RAILROAD', LOADGROUP, 'SLGR13_POS_RAILROAD', 
+    '', 0.8, 0, 0, 0, 1, 1), ('SLGR14_POS_RAILROAD', LOADGROUP, 
+    'SLGR14_POS_RAILROAD', '', 0.8, 0, 0, 0, 1, 1), ('SLGR15_POS_RAILROAD', 
+    LOADGROUP, 'SLGR15_POS_RAILROAD', '', 0.8, 0, 0, 0, 1, 1), (
+    'SLGR21_POS_RAILROAD', LOADGROUP, 'SLGR21_POS_RAILROAD', '', 0.7, 0, 0, 0, 
+    1, 1), ('SLGR22_POS_RAILROAD', LOADGROUP, 'SLGR22_POS_RAILROAD', '', 0.7, 
+    0, 0, 0, 1, 1), ('MAINT_POS_RAILROAD', LOADGROUP, 'MAINT_POS_RAILROAD', 
+    '', 0.8, 0, 0, 0, 1, 1)), addZeroLoad=True, associatedComponents=('SF1', 
+    'SF2', 'SF3', 'SF4', 'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 
+    'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['FRETML_POS_RAILROAD'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='KVATML_POS_RAILROAD', loadGroupName='KVATML_POS_RAILROAD', 
+    type=LOADGROUP)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='KVATML_POS_RAILROAD', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'SLGR11_POS_RAILROAD', LOADGROUP, 'SLGR11_POS_RAILROAD', '', 1, 0, 0, 0, 1, 
+    1), ('SLGR12_POS_RAILROAD', LOADGROUP, 'SLGR12_POS_RAILROAD', '', 1, 0, 0, 
+    0, 1, 1), ('SLGR13_POS_RAILROAD', LOADGROUP, 'SLGR13_POS_RAILROAD', '', 1, 
+    0, 0, 0, 1, 1), ('SLGR14_POS_RAILROAD', LOADGROUP, 'SLGR14_POS_RAILROAD', 
+    '', 1, 0, 0, 0, 1, 1), ('SLGR15_POS_RAILROAD', LOADGROUP, 
+    'SLGR15_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1), ('SLGR21_POS_RAILROAD', 
+    LOADGROUP, 'SLGR21_POS_RAILROAD', '', 1, 0, 0, 0, 1, 1), (
+    'SLGR22_POS_RAILROAD', LOADGROUP, 'SLGR22_POS_RAILROAD', '', 1, 0, 0, 0, 1, 
+    1)), addZeroLoad=True, associatedComponents=('SF1', 'SF2', 'SF3', 'SF4', 
+    'SF5', 'SM1', 'SM2', 'SM3', 'U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3'))
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['KVATML_POS_RAILROAD'].active = True	
+##
+
+
+
+
+
+
+
+
+
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='GROUP_ACCIDENT_LOAD_ENVELOPE', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(
+	('Accident_N_01', DESIGN_LOAD, 'Accident_N_0', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_11', DESIGN_LOAD, 'Accident_N_1', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_21', DESIGN_LOAD, 'Accident_N_2', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_31', DESIGN_LOAD, 'Accident_N_3', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_41', DESIGN_LOAD, 'Accident_N_4', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_51', DESIGN_LOAD, 'Accident_N_5', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_61', DESIGN_LOAD, 'Accident_N_6', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_71', DESIGN_LOAD, 'Accident_N_7', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_81', DESIGN_LOAD, 'Accident_N_8', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_91', DESIGN_LOAD, 'Accident_N_9', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_101', DESIGN_LOAD, 'Accident_N_10', SUM_LAST_FRAME, 1, 0, 0, 0, 1,1), 
+	('Accident_N_111',	DESIGN_LOAD, 'Accident_N_11', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_121',	DESIGN_LOAD, 'Accident_N_12', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_131',	DESIGN_LOAD, 'Accident_N_13', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_141',	DESIGN_LOAD, 'Accident_N_14', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_151',	DESIGN_LOAD, 'Accident_N_15', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_161',	DESIGN_LOAD, 'Accident_N_16', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_171',	DESIGN_LOAD, 'Accident_N_17', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_181', DESIGN_LOAD, 'Accident_N_18', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_191',	DESIGN_LOAD, 'Accident_N_19', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_201',	DESIGN_LOAD, 'Accident_N_20', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_211', DESIGN_LOAD, 'Accident_N_21', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_221',	DESIGN_LOAD, 'Accident_N_22', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_231',	DESIGN_LOAD, 'Accident_N_23', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_241',	DESIGN_LOAD, 'Accident_N_24', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_251', DESIGN_LOAD, 'Accident_N_25', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_261', DESIGN_LOAD, 'Accident_N_26', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_271', DESIGN_LOAD, 'Accident_N_27', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_01', DESIGN_LOAD, 'Accident_S_0', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_11', DESIGN_LOAD, 'Accident_S_1', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_21', DESIGN_LOAD, 'Accident_S_2', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_31', DESIGN_LOAD, 'Accident_S_3', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_41', DESIGN_LOAD, 'Accident_S_4', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_51', DESIGN_LOAD, 'Accident_S_5', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_61', DESIGN_LOAD, 'Accident_S_6', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_71', DESIGN_LOAD, 'Accident_S_7', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_81', DESIGN_LOAD, 'Accident_S_8', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_91', DESIGN_LOAD, 'Accident_S_9', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_101', DESIGN_LOAD, 'Accident_S_10', SUM_LAST_FRAME, 1, 0, 0, 0, 1,1), 
+	('Accident_S_111',	DESIGN_LOAD, 'Accident_S_11', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_121',	DESIGN_LOAD, 'Accident_S_12', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_131',	DESIGN_LOAD, 'Accident_S_13', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_141',	DESIGN_LOAD, 'Accident_S_14', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_151',	DESIGN_LOAD, 'Accident_S_15', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_161',	DESIGN_LOAD, 'Accident_S_16', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_171',	DESIGN_LOAD, 'Accident_S_17', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_181', DESIGN_LOAD, 'Accident_S_18', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_191',	DESIGN_LOAD, 'Accident_S_19', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_201',	DESIGN_LOAD, 'Accident_S_20', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_211', DESIGN_LOAD, 'Accident_S_21', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_221',	DESIGN_LOAD, 'Accident_S_22', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_231',	DESIGN_LOAD, 'Accident_S_23', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_241',	DESIGN_LOAD, 'Accident_S_24', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_251', DESIGN_LOAD, 'Accident_S_25', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_261', DESIGN_LOAD, 'Accident_S_26', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_271', DESIGN_LOAD, 'Accident_S_27', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+), 
+	addZeroLoad=True, associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['GROUP_ACCIDENT_LOAD_ENVELOPE'].active = True
+###
+#
+#
+
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Accident_N_poz', 
+    previous='Accident_S_0')
+#	
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Accident_N_neg', 
+    previous='Accident_S_0')
+#	
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Accident_S_poz', 
+    previous='Accident_S_0')
+#	
+mdb.models['Model-1'].StaticLinearPerturbationStep(name='Accident_S_neg', 
+    previous='Accident_S_0')
+# N side
+
+
+
+
+
+mdb.models['Model-1'].SurfaceTraction(createStepName='Accident_S_neg', 
+    directionVector=((0.0, 0.0, 0.0), (1.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=1500000.0, name=
+    'Accident_S_neg', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Accident_S'], traction=
+    GENERAL)
+	
+mdb.models['Model-1'].SurfaceTraction(createStepName='Accident_S_poz', 
+    directionVector=((1.0, 0.0, 0.0), (0.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=1500000.0, name=
+    'Accident_S_poz', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Accident_S'], traction=
+    GENERAL)
+
+
+mdb.models['Model-1'].SurfaceTraction(createStepName='Accident_N_neg', 
+    directionVector=((0.0, 0.0, 0.0), (1.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=1500000.0, name=
+    'Accident_N_neg', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Accident_N'], traction=
+    GENERAL)
+	
+mdb.models['Model-1'].SurfaceTraction(createStepName='Accident_N_poz', 
+    directionVector=((1.0, 0.0, 0.0), (0.0, 0.0, 0.0)), distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=1500000.0, name=
+    'Accident_N_poz', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Accident_N'], traction=
+    GENERAL)
+
+###
+###
+###
+mdb.customData.designCodes.models['Model-1'].LoadGroup(name='ACCIDENT_N', 
+    loadGroupName='Accident_N', type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='ACCIDENT_N', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(
+	('Accident_N_01', DESIGN_LOAD, 'Accident_N_0', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_11', DESIGN_LOAD, 'Accident_N_1', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_21', DESIGN_LOAD, 'Accident_N_2', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_31', DESIGN_LOAD, 'Accident_N_3', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_41', DESIGN_LOAD, 'Accident_N_4', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_51', DESIGN_LOAD, 'Accident_N_5', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_61', DESIGN_LOAD, 'Accident_N_6', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_71', DESIGN_LOAD, 'Accident_N_7', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_81', DESIGN_LOAD, 'Accident_N_8', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_91', DESIGN_LOAD, 'Accident_N_9', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_101', DESIGN_LOAD, 'Accident_N_10', SUM_LAST_FRAME, 1, 0, 0, 0, 1,1), 
+	('Accident_N_111',	DESIGN_LOAD, 'Accident_N_11', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_121',	DESIGN_LOAD, 'Accident_N_12', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_131',	DESIGN_LOAD, 'Accident_N_13', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_141',	DESIGN_LOAD, 'Accident_N_14', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_151',	DESIGN_LOAD, 'Accident_N_15', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_161',	DESIGN_LOAD, 'Accident_N_16', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_171',	DESIGN_LOAD, 'Accident_N_17', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_181', DESIGN_LOAD, 'Accident_N_18', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_191',	DESIGN_LOAD, 'Accident_N_19', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_201',	DESIGN_LOAD, 'Accident_N_20', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_N_211', DESIGN_LOAD, 'Accident_N_21', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_221',	DESIGN_LOAD, 'Accident_N_22', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_231',	DESIGN_LOAD, 'Accident_N_23', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_241',	DESIGN_LOAD, 'Accident_N_24', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_251', DESIGN_LOAD, 'Accident_N_25', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_261', DESIGN_LOAD, 'Accident_N_26', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_N_271', DESIGN_LOAD, 'Accident_N_27', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),), 
+	addZeroLoad=True, associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['ACCIDENT_N'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(name='ACCIDENT_N_neg2', 
+    loadGroupName='ACCIDENT_N_neg2', type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='ACCIDENT_N_neg2', summationMethod=UNCONDITIONAL, 
+    includeAllDesignLoads=True, numberOfDesignLoads=1, 
+    numberOfLoadCoefficients=1, loads=(
+	('ACCIDENT_N1', LOADGROUP, 'ACCIDENT_N', '', 1, 1, 1, 1, 1, 1), 
+	('Accident_N_neg1', DESIGN_LOAD, 'Accident_N_neg', SUM_LAST_FRAME, 1, 1, 1, 1, 1, 1)), 
+	addZeroLoad=False, 
+    associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['ACCIDENT_N_neg2'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(name='ACCIDENT_N_poz2', 
+    loadGroupName='ACCIDENT_N_poz', type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='ACCIDENT_N_poz2', summationMethod=UNCONDITIONAL, 
+    includeAllDesignLoads=True, numberOfDesignLoads=1, 
+    numberOfLoadCoefficients=1, loads=(
+	('ACCIDENT_N1', LOADGROUP, 'ACCIDENT_N', '', 1, 1, 1, 1, 1, 1), 
+	('Accident_N_neg1', DESIGN_LOAD, 'Accident_N_poz', SUM_LAST_FRAME, 1, 1, 1, 1, 1, 1)), 
+	addZeroLoad=False, 
+    associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['ACCIDENT_N_poz2'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='ACCIDENT_NEG_FINAL', loadGroupName='Accident_neg_final', 
+    type=LOADGROUP)
+#
+
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='ACCIDENT_NEG_FINAL', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'ACCIDENT_N_neg1', LOADGROUP, 'ACCIDENT_N_neg2', '', 1, 0, 0, 0, 1, 1), (
+    'ACCIDENT_N_poz1', LOADGROUP, 'ACCIDENT_N_poz2', '', 1, 0, 0, 0, 1, 1)), 
+    addZeroLoad=False, associatedComponents=())
+	
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['ACCIDENT_NEG_FINAL'].active = True
+
+##
+###
+###
+##
+
+mdb.customData.designCodes.models['Model-1'].LoadGroup(name='Accident_S', 
+    loadGroupName='Accident_S', type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='Accident_S', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(
+	('Accident_S_01', DESIGN_LOAD, 'Accident_S_0', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_11', DESIGN_LOAD, 'Accident_S_1', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_21', DESIGN_LOAD, 'Accident_S_2', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_31', DESIGN_LOAD, 'Accident_S_3', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_41', DESIGN_LOAD, 'Accident_S_4', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_51', DESIGN_LOAD, 'Accident_S_5', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_61', DESIGN_LOAD, 'Accident_S_6', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_71', DESIGN_LOAD, 'Accident_S_7', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_81', DESIGN_LOAD, 'Accident_S_8', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_91', DESIGN_LOAD, 'Accident_S_9', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_101', DESIGN_LOAD, 'Accident_S_10', SUM_LAST_FRAME, 1, 0, 0, 0, 1,1), 
+	('Accident_S_111',	DESIGN_LOAD, 'Accident_S_11', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_121',	DESIGN_LOAD, 'Accident_S_12', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_131',	DESIGN_LOAD, 'Accident_S_13', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_141',	DESIGN_LOAD, 'Accident_S_14', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_151',	DESIGN_LOAD, 'Accident_S_15', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_161',	DESIGN_LOAD, 'Accident_S_16', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_171',	DESIGN_LOAD, 'Accident_S_17', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_181', DESIGN_LOAD, 'Accident_S_18', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_191',	DESIGN_LOAD, 'Accident_S_19', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_201',	DESIGN_LOAD, 'Accident_S_20', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),
+	('Accident_S_211', DESIGN_LOAD, 'Accident_S_21', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_221',	DESIGN_LOAD, 'Accident_S_22', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_231',	DESIGN_LOAD, 'Accident_S_23', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_241',	DESIGN_LOAD, 'Accident_S_24', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_251', DESIGN_LOAD, 'Accident_S_25', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_261', DESIGN_LOAD, 'Accident_S_26', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1), 
+	('Accident_S_271', DESIGN_LOAD, 'Accident_S_27', SUM_LAST_FRAME, 1, 0, 0, 0, 1, 1),), 
+	addZeroLoad=True, associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['Accident_S'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(name='Accident_S_neg2', 
+    loadGroupName='Accident_S_neg2', type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='Accident_S_neg2', summationMethod=UNCONDITIONAL, 
+    includeAllDesignLoads=True, numberOfDesignLoads=1, 
+    numberOfLoadCoefficients=1, loads=(
+	('Accident_S1', LOADGROUP, 'Accident_S', '', 1, 1, 1, 1, 1, 1), 
+	('Accident_S_neg1', DESIGN_LOAD, 'Accident_S_neg', SUM_LAST_FRAME, 1, 1, 1, 1, 1, 1)), 
+	addZeroLoad=False, 
+    associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['Accident_S_neg2'].active = True
+##
+mdb.customData.designCodes.models['Model-1'].LoadGroup(name='Accident_S_poz2', 
+    loadGroupName='Accident_S_poz2', type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='Accident_S_poz2', summationMethod=UNCONDITIONAL, 
+    includeAllDesignLoads=True, numberOfDesignLoads=1, 
+    numberOfLoadCoefficients=1, loads=(
+	('Accident_S1', LOADGROUP, 'Accident_S', '', 1, 1, 1, 1, 1, 1), 
+	('Accident_S_neg1', DESIGN_LOAD, 'Accident_S_poz', SUM_LAST_FRAME, 1, 1, 1, 1, 1, 1)), 
+	addZeroLoad=False, 
+    associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['Accident_S_poz2'].active = True
+##
+
+
+
+'''
+
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='ACCIDENT_NEG_FINAL', loadGroupName='Accident_neg_final', 
+    type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='ACCIDENT_NEG_FINAL', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'ACCIDENT_N_neg1', LOADGROUP, 'ACCIDENT_N_neg2', '', 1, 0, 0, 0, 1, 1), (
+    'ACCIDENT_N_poz1', LOADGROUP, 'ACCIDENT_N_poz2', '', 1, 0, 0, 0, 1, 1)), 
+    addZeroLoad=False, associatedComponents=())
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['ACCIDENT_NEG_FINAL'].active = True
+
+
+'''
+
+
+
+
+
+mdb.customData.designCodes.models['Model-1'].LoadGroup(
+    name='Accident_SEG_FINAL', loadGroupName='Accident_Seg_final', 
+    type=LOADGROUP)
+#
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(
+    modelName='Model-1', loadId='Accident_SEG_FINAL', 
+    summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, 
+    numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=((
+    'Accident_S_neg1', LOADGROUP, 'Accident_S_neg2', '', 1, 0, 0, 0, 1, 1), (
+    'Accident_S_poz1', LOADGROUP, 'Accident_S_poz2', '', 1, 0, 0, 0, 1, 1)), 
+    addZeroLoad=False, associatedComponents=())
+#
+mdb.customData.designCodes.models['Model-1'].loadGroups['Accident_SEG_FINAL'].active = True	
+#
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+
+
+############################### ACTIVATING LOAD GROUPS ########################################
+
+
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+
+
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1UDL'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1TS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1UDL'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1TS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1UDL'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR2C'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1TS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1UDL'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR2'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR2C'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1TS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1UDL'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR1B'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR2'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR2C'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1TS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1UDL'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR1AC'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR1B'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR2'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LMGR2C'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1TS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM1UDL'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['LM2_POS'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCAR'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+
+###################################################################################
+#### ACTIVATING LOAD COMBINATIONS, CLEANING THEM UP (REMOVING NONPRESENT LOADS ETC.)
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='LMGR2', summationMethod=CONDITIONAL, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LM1TS', LOADGROUP, 'LM1TS', '', 0.75, 0.75, 0.75, 0.75, 1, 1), ('LM1UDL', LOADGROUP, 'LM1UDL', '', 0.4, 0.4, 0.4, 0.4, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='LMGR2', summationMethod=CONDITIONAL, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LM1TS', LOADGROUP, 'LM1TS', '', 0.75, 0.75, 0.75, 0.75, 1, 1), ('LM1UDL', LOADGROUP, 'LM1UDL', '', 0.4, 0.4, 0.4, 0.4, 1, 1)), addZeroLoad=True, associatedComponents=())
+
+
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='LMGR1AC', summationMethod=CONDITIONAL, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LM1TS', LOADGROUP, 'LM1TS', '', 0.75, 0.75, 0.75, 0.75, 1, 1), ('LM1UDL', LOADGROUP, 'LM1UDL', '', 0.4, 0.4, 0.4, 0.4, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='LMGR1AC', summationMethod=CONDITIONAL, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LM1TS', LOADGROUP, 'LM1TS', '', 0.75, 0.75, 0.75, 0.75, 1, 1), ('LM1UDL', LOADGROUP, 'LM1UDL', '', 0.4, 0.4, 0.4, 0.4, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='TRCAR', summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LMGR1A', LOADGROUP, 'LMGR1A', '', 1, 0, 0, 0, 1, 1), ('LMGR1B', LOADGROUP, 'LMGR1B', '', 1, 0, 0, 0, 1, 1), ('LMGR2', LOADGROUP, 'LMGR2', '', 1, 0, 0, 0, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='TRCAR', summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LMGR1A', LOADGROUP, 'LMGR1A', '', 1, 0, 0, 0, 1, 1), ('LMGR1B', LOADGROUP, 'LMGR1B', '', 1, 0, 0, 0, 1, 1), ('LMGR2', LOADGROUP, 'LMGR2', '', 1, 0, 0, 0, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='LMGR1A', summationMethod=CONDITIONAL, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LM1TS', LOADGROUP, 'LM1TS', '', 1, 1, 1, 1, 1, 1), ('LM1UDL', LOADGROUP, 'LM1UDL', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='LMGR1A', summationMethod=CONDITIONAL, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LM1TS', LOADGROUP, 'LM1TS', '', 1, 1, 1, 1, 1, 1), ('LM1UDL', LOADGROUP, 'LM1UDL', '', 1, 1, 1, 1, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='TRCOMB', summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LMGR1AC', LOADGROUP, 'LMGR1AC', '', 1, 0, 0, 0, 1, 1), ('LMGR2C', LOADGROUP, 'LMGR2C', '', 1, 0, 0, 0, 1, 1)), addZeroLoad=True, associatedComponents=())
+dataManagement.modules.loadCombination.registerFormHandling.LoadGroup(modelName='Model-1', loadId='TRCOMB', summationMethod=PICK_MOST_ADVERSE, includeAllDesignLoads=True, numberOfDesignLoads=1, numberOfLoadCoefficients=1, loads=(('LMGR1AC', LOADGROUP, 'LMGR1AC', '', 1, 0, 0, 0, 1, 1), ('LMGR2C', LOADGROUP, 'LMGR2C', '', 1, 0, 0, 0, 1, 1)), addZeroLoad=True, associatedComponents=())
+mdb.customData.designCodes.models['Model-1'].loadGroups['GROUP_TEMPERATURE_MEAN'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['GROUP_EARTH_PRESSURE_ENVELOPE'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['GROUP_TEMPERATURE_MEAN'].active = True
+mdb.customData.designCodes.models['Model-1'].loadGroups['TRCOMB'].active = True
+
+############ MESH #########################
+mdb.models['Model-1'].rootAssembly.seedPartInstance(deviationFactor=0.1, 
+    minSizeFactor=0.1, regions=(
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'], ), size=0.5)
+mdb.models['Model-1'].rootAssembly.seedEdgeByNumber(constraint=FINER, edges=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].edges.findAt(((x1, 
+    (y1+y01)/2, 0.0), ), ((x5, (y5+y05)/2, 0.0), ), ((x7, (y7+y07)/2, 0.0), ), ((x6, 
+    (y6+y06)/2, 0.0), ), ), number=2)
+	
+mdb.models['Model-1'].rootAssembly.setMeshControls(regions=
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'].faces.findAt(((
+    18.800001, 3.566667, 0.0), ), ((18.800001, 5.766667, 0.0), ), ((18.800001, 
+    7.566667, 0.0), ), ((55.013335, 10.915, 0.0), ), ((1.3, 11.872, 0.0), ), ((
+    18.800001, 0.2, 0.0), ), ((1.3, 7.831, 5.82), ), ((18.800001, 0.6, 1.94), 
+    ), ((55.013335, 11.771667, 1.94), ), ((50.425001, 11.506667, 1.94), ), ((
+    32.496665, 11.37, 1.94), ), ((2.6, 11.421, 1.94), ), ((37.600001, 2.0, 
+    0.0), ), ), technique=STRUCTURED)
+	
+mdb.models['Model-1'].rootAssembly.generateMesh(regions=(
+    mdb.models['Model-1'].rootAssembly.instances['BP1-1'], ))
+
+####### JOB #######################
+mdb.Job(model='Model-1', name='Job-1')
+mdb.jobs['Job-1'].setValues(description='test', memory=50, memoryUnits=
+    PERCENTAGE, numCpus=1, numDomains=1)
+mdb.Job(name='Job-1', model='Model-1')
+mdb.jobs['Job-1'].setValues(description='test', memoryUnits=PERCENTAGE, memory=50, numCpus=1, numDomains=1)
